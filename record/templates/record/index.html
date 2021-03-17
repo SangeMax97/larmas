@@ -1,0 +1,43 @@
+<h1>index</h1>
+<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum voluptatibus debitis magnam facere sunt sit quam odio a, corrupti vero ratione saepe quidem illum totam quasi itaque eos? Suscipit, doloribus!</p>
+
+<div id="video-container-view">
+    {% include 'record/video-container.html' %}
+</div>
+<button type="submit" id="video-container-btn">video-container-view</button>
+<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum voluptatibus debitis magnam facere sunt sit quam odio a, corrupti vero ratione saepe quidem illum totam quasi itaque eos? Suscipit, doloribus!</p>
+
+<div id="audio-container-view">
+    {% include 'record/audio-container.html' %}
+</div>
+<button type="submit" id="audio-container-btn">audio-container-view</button>
+<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum voluptatibus debitis magnam facere sunt sit quam odio a, corrupti vero ratione saepe quidem illum totam quasi itaque eos? Suscipit, doloribus!</p>
+
+<div id="audio-video-container-view">
+    {% include 'record/audio-video-container.html' %}
+</div>
+<button type="submit" id="audio-video-container-btn">audio-video-container-view</button>
+<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum voluptatibus debitis magnam facere sunt sit quam odio a, corrupti vero ratione saepe quidem illum totam quasi itaque eos? Suscipit, doloribus!</p>
+
+
+
+
+<script src="../../static/record/js/jquery-3.4.1.min.js"></script>
+
+<script>
+    $(function() {
+
+        $('#audio-container-btn').click(function(){
+            $('#audio-container-view').toggle(500);
+        });
+
+        $('#audio-video-container-btn').click(function(){
+            $('#audio-video-container-view').toggle(500);
+        });
+
+        $('#video-container-btn').click(function(){
+            $('#video-container-view').toggle(500);
+        });
+
+    });
+</script>

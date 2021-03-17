@@ -1,0 +1,176 @@
+<!-- add audio -->
+{% include "record/static.html" %}
+{% block content %} 
+<div class="container">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12 col-md-6">
+            <h4>Test with your own text</h4>
+            <form class="text-form" id="audio_form">
+                    <p class="my-0"> Copy-paste word here: </p>
+                    <input type="text" class="mb-3 form-control form-control-sm" name="add_audio_input" id='add_audio_input'>
+                    
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect_add_audio_01">language</label>
+                    </div>
+                    <select name='language' class="custom-select" id="inputGroupSelect_add_audio_01">
+                        <option value="" selected>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="IsiXhosa">IsiXhosa</option>
+                        <option value="Sesotho">Sesotho</option>
+                    </select>
+                </div>
+                
+                <div style="height: 200px" class="form-group">
+                    <audio id="myAudio" class="video-js vjs-default-skin"></audio>
+                </div>  
+                <button type="submit" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Add audio</button>  
+            
+            </form>
+        </div>  
+        
+        <div class="col-12 col-md-6">
+            <h4>Add metadata</h4>
+            <form class="text-form">       
+                <input type="text" class="mb-3 form-control form-control-sm" name="add_audio_name" id='add_audio_name'>
+               
+                <div class="form-group">
+                    <label class="my-0" for="">Copy-paste definition here:</label>                     
+                    <textarea style="min-height: 100px" class="form-control"></textarea>
+                </div>  
+
+                <div class="form-group">
+                    <label class="my-0" for="">Copy-paste example usage here:</label>                     
+                    <textarea style="min-height: 100px" class="form-control"></textarea>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect_add_audio_02">part of speech</label>
+                    </div>
+                    <select class="custom-select" id="inputGroupSelect_add_audio_02">
+                        <option selected>Choose...</option>
+                        <option value="Adjective">Adjective</option>
+                        <option value="Adverb">Adverb</option>
+                        <option value="Conjunction">Conjunction</option>
+                        <option value="Determiner">Determiner</option>
+                        <option value="Noun">Noun</option>
+                        <option value="Number">Number</option>
+                        <option value="Preposition">Preposition</option>
+                        <option value="Pronoun">Pronoun</option>
+                        <option value="Verb">Verb</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Save</button>  
+            </form>
+        </div>
+
+    </div>       
+
+</div>  
+
+{% endblock content %}
+
+{% block script %}
+
+<script>
+    /* eslint-disable */
+    var options = {
+        controls: true,
+        fluid: false,
+        plugins: {
+            wavesurfer: {
+                src: 'live',
+                waveColor: '#36393b',
+                progressColor: 'black',
+                debug: true,
+                cursorWidth: 1,
+                msDisplayMax: 20,
+                hideScrollbar: true
+            },
+            record: {
+                audio: true,
+                video: false,
+                maxLength: 20,
+                debug: true
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append('csrfmiddlewaretoken',"{{ csrf_token }}");
+
+    // apply audio workarounds for certain browsers
+    applyAudioWorkaround();
+
+    // create audio_player
+    var audio_player = videojs('myAudio', options, function() {
+        // print version information at startup
+        var msg = 'Using video.js ' + videojs.VERSION +
+            ' with videojs-record ' + videojs.getPluginVersion('record') +
+            ', videojs-wavesurfer ' + videojs.getPluginVersion('wavesurfer') +
+            ', wavesurfer.js ' + WaveSurfer.VERSION + ' and recordrtc ' +
+            RecordRTC.version;
+        videojs.log(msg);
+    });
+
+    // error handling
+    audio_player.on('deviceError', function() {
+        console.log('device error:', audio_player.deviceErrorCode);
+    });
+
+    audio_player.on('error', function(element, error) {
+        console.error(error);
+    });
+
+    // user clicked the record button and started recording
+    audio_player.on('startRecord', function() {
+        console.log('started recording!');
+    });
+
+    // user completed recording and stream is available
+    audio_player.on('finishRecord', function() {
+        // the blob object contains the recorded data that
+        // can be downloaded by the user, stored on server etc.
+
+        formData.append('audio_player', audio_player.recordedData);
+        formData.append('name', audio_player.recordedData.name);
+        formData.append('size', audio_player.recordedData.size);
+        formData.append('type', audio_player.recordedData.type);
+        formData.append('created', audio_player.recordedData.lastModifiedDate);
+  
+    });
+
+$(document).ready(function() {
+    $('#audio_form').submit(function(e) {
+
+        // formData.append('type', );
+        formData.append('language', $('#inputGroupSelect_add_audio_01').val());
+        formData.append('text', $('#add_audio_input').val());
+           
+        var name = $('#add_audio_input').val();
+        
+        xhr("{% url 'audio_container' %}", formData, function (fName) { 
+            $('#add_audio_name').val(name);
+        });
+
+        function xhr(url, data, callback) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    callback(location.href + request.responseText);
+                }
+            };
+            request.open('POST', url);
+            request.send(data);
+        }
+
+        e.preventDefault();
+    });
+
+});
+
+</script>
+
+{% endblock %}

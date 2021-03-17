@@ -1,0 +1,112 @@
+<!-- add audio -->
+{% include "record/static.html" %}
+{% block content %} 
+<form class="text-form" id="audio-form-for-{{word}}">
+    <div style="height: 200px" class="form-group">
+        <audio id="myAudio" class="video-js vjs-default-skin"></audio>
+    </div>  
+    <button type="submit" class="btn btn-primary btn-user btn-block">Add audio</button>  
+</form>
+{% endblock content %}
+
+{% block script %}
+
+<script>
+    /* eslint-disable */
+    var options = {
+        controls: true,
+        fluid: false,
+        plugins: {
+            wavesurfer: {
+                src: 'live',
+                waveColor: '#36393b',
+                progressColor: 'black',
+                debug: true,
+                cursorWidth: 1,
+                msDisplayMax: 20,
+                hideScrollbar: true
+            },
+            record: {
+                audio: true,
+                video: false,
+                maxLength: 20,
+                debug: true
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append('csrfmiddlewaretoken',"{{ csrf_token }}");
+
+    // apply audio workarounds for certain browsers
+    applyAudioWorkaround();
+
+    // create audio_player
+    var audio_player = videojs('myAudio', options, function() {
+        // print version information at startup
+        var msg = 'Using video.js ' + videojs.VERSION +
+            ' with videojs-record ' + videojs.getPluginVersion('record') +
+            ', videojs-wavesurfer ' + videojs.getPluginVersion('wavesurfer') +
+            ', wavesurfer.js ' + WaveSurfer.VERSION + ' and recordrtc ' +
+            RecordRTC.version;
+        videojs.log(msg);
+    });
+
+    // error handling
+    audio_player.on('deviceError', function() {
+        console.log('device error:', audio_player.deviceErrorCode);
+    });
+
+    audio_player.on('error', function(element, error) {
+        console.error(error);
+    });
+
+    // user clicked the record button and started recording
+    audio_player.on('startRecord', function() {
+        console.log('started recording!');
+    });
+
+    // user completed recording and stream is available
+    audio_player.on('finishRecord', function() {
+        // the blob object contains the recorded data that
+        // can be downloaded by the user, stored on server etc.
+
+        formData.append('audio_player', audio_player.recordedData);
+        formData.append('name', audio_player.recordedData.name);
+        formData.append('size', audio_player.recordedData.size);
+        formData.append('type', audio_player.recordedData.type);
+        formData.append('created', audio_player.recordedData.lastModifiedDate);
+  
+    });
+
+$(document).ready(function() {
+    $('#audio-form-for-{{word}}').submit(function(e) {
+        console.log($(this).serialize());
+
+        // formData.append('type', );
+        formData.append('language', $('#inputGroupSelect_add_audio_01').val());
+        formData.append('text', $('#add_audio_input').val());
+
+        xhr("{% url 'audio_container' %}", formData, function (fName) { 
+            console.log($(this).serialize());
+        });
+
+        function xhr(url, data, callback) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    callback(location.href + request.responseText);
+                }
+            };
+            request.open('POST', url);
+            request.send(data);
+        }
+
+        e.preventDefault();
+    });
+
+});
+
+</script>
+
+{% endblock %}
