@@ -1,0 +1,121 @@
+
+<!-- search translation of text -->
+{% block content %} 
+<div class="">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12">
+            <div class="alert alert-primary alert-dismissible fade show" role="alert" id="translation_added"> 
+                <p class="m-0 p-0"></p>
+                <button type="button" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+                <div id="translation_search_right_div" class="form-group">
+                    <label class="mb-2">
+                        <span>Language: {{text.language}}</span> 
+                    </label>
+                    <div class="col-12 text-center">
+                        <blockquote><h3>{{text}}</h3></blockquote>
+                    </div>      
+              
+                </div> 
+
+        </div>  
+
+        <div class="col-12">
+                <form id="translation_search_form">
+                    {% csrf_token %} 
+
+                    <div class="form-group">
+                        <label class="mb-2">
+                             <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelect07">language</label>
+                                </div>
+                                <select name="language" class="custom-select" id="inputGroupSelect07">
+                                    <option value="" selected>Choose...</option>
+                                    <option value="English">English</option>
+                                    <option value="IsiXhosa">IsiXhosa</option>
+                                    <option value="Sesotho">Sesotho</option>
+                                </select>
+                            </div>
+                        </label>
+                        <input name="text" value="{{text}}" hidden>
+
+                        <input id="translation"  name="translation" class="text-center form-control border-top-0 border-right-0 border-left-0 rounded-0 pt-0">
+                    </div> 
+    
+                    <button type="submit" form="translation_search_form" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Submit Translation</button>  
+                    <button id='skip_translation' type="button" class="btn btn-danger shadow px-3 ml-1 py-2 mb-2 rounded">Skip</button>  
+
+                </form>
+            </div>  
+
+    </div>      
+</div>
+
+<style>
+blockquote {
+    border:none;
+    font-family:Georgia, "Times New Roman", Times, serif;
+    margin-bottom:-30px;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote h3 {
+font-size:20px;
+}
+
+blockquote h3:before { 
+content: open-quote;
+font-weight: bold;
+font-size:30px;
+color:#4e73df;
+margin-right: 10px;
+} 
+blockquote h3:after { 
+content: close-quote;
+font-weight: bold;
+font-size:30px;
+color:#4e73df;
+margin-left: 10px;
+}
+</style>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+
+    $("#translation_added").hide();
+
+    $("#translation_added .close").click(function() {
+        $("#translation_added").fadeOut('fast')
+    });
+
+    $('#skip_translation').click(function(e) {
+        $('#translation_search_right_div').load(' #translation_search_right_div');
+        $("#translation_added").hide();
+    });
+    
+    $('#translation_search_form').submit(function(e) {
+        
+        $.post("{% url 'add_translation' %}", $(this).serialize(), function(data) {
+
+            console.log('add translation');
+
+            $("#translation_added p").html(data['response']);
+            $("#translation_added").show();
+            $('#translation_search_right_div').load(' #translation_search_right_div');
+            $('#translation').val('');
+        });
+        e.preventDefault();
+    });
+
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+
+<!-- translate text -->
+{% block content %} 
+<div class="">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12 col-md-6">
+            <form id="translate_form">
+                {% csrf_token %} 
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">filter</label>
+                    </div>
+                    <select name="language" class="custom-select" id="inputGroupSelect01">
+                        <option value="" selected>All </option>
+                        <option value="English">English</option>
+                        <option value="IsiXhosa">IsiXhosa</option>
+                        <option value="Sesotho">Sesotho</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <textarea name="text" style="min-height: 180px" class="form-control"></textarea>
+                </div>  
+                <button type="submit" form="translate_form" class="btn btn-card shadow px-3 py-2 mb-3 rounded">Translate Text</button>  
+            
+            </form>
+        </div>  
+        
+        <div  id="translate_right_div" class="col-12 col-md-6">
+             
+        </div>       
+
+    </div>      
+</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#translate_form').submit(function(e) {
+        
+        $.post("{% url 'search_translation' %}", $(this).serialize(), function(data) {            
+           
+            if(data['translations']) {
+
+                var translate_div = $('<div></div>').addClass('translations');
+                translate_div.append($('<p></p>').addClass('mb-0 ').text('Translations:'))
+                translate_div.append($('<hr>').addClass('mt-0 '))
+                
+                $.each(data['translations'], function(key, values) {
+                    var language =  $('<p></p>').addClass('font-italic');
+                    language.text(key)
+                    language.appendTo(translate_div);
+
+                    var translation_list = $('<ol></ol>');
+
+                    $.each(values, function(k, value) {
+                        var translation = $('<li></li>').addClass('text-justify font-weight-light m-0').text(value);
+                        translation.appendTo(translation_list)
+                        console.log(k +': '+ value);
+                    });
+                    translation_list.appendTo(translate_div)
+                });
+                $("#translate_right_div").html(translate_div);      
+            }
+            else $("#translate_right_div").html(data['response']);      
+        });
+        e.preventDefault();
+    });
+
+
+});
+</script>
+{% endblock %}
