@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <!--left col-->
+            <div class="text-center">
+                <h3>{{user.first_name}}</h3>
+                <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+                    alt="avatar">
+                <h6>Upload a different photo...</h6>
+
+                <div class="input-group mt-2 small">
+                    <div class="input-group-prepend ">
+                        <span class="input-group-text small">Upload</span>
+                    </div>
+                    <label class="form-control small" for="inputGroupFiled01">Choose file</label>
+                    <input type="file" class="custom-file-input" id="inputGroupFiled01"
+                        aria-describedby="inputGroupFileAddon01">
+                </div>
+
+            </div>
+            <hr>
+
+
+
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted text-center">Activity <i class="fa fa-dashboard fa-1x"></i></li>
+                <li class="list-group-item text-center"><span class="pull-left"><strong>Activity_1</strong></span> 12</li>
+                <li class="list-group-item text-center"><span class="pull-left"><strong>Activity_2</strong></span> 13</li>
+                <li class="list-group-item text-center"><span class="pull-left"><strong>Activity_3</strong></span> 37</li>
+                <li class="list-group-item text-center"><span class="pull-left"><strong>Activity_4</strong></span> 78</li>
+            </ul>
+
+
+        </div>
+        <!--/col-3-->
+        <div class="col-sm-9">
+                <div class="alert alert-primary alert-dismissible fade show" role="alert" id="updated"> 
+                Your profile has been updated !
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" aria-selected="true">Personal Information</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                        aria-controls="profile" aria-selected="false">Activity Log</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                        aria-controls="contact" aria-selected="false">Settings</a>
+                </li>
+            </ul>
+            <hr>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <form class="form" id="registrationForm">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <label for="first_name">
+                                    <h4>First name</h4>
+                                </label>
+                                <input type="text" class="form-control" name="first_name" id="first_name"
+                                    placeholder="first name" value="{{ user.first_name }}">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="last_name">
+                                    <h4>Last name</h4>
+                                </label>
+                                <input type="text" class="form-control" name="last_name" id="last_name"
+                                    placeholder="last name" value="{{ user.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <label for="age">
+                                        <h4>Age</h4>
+                                    </label>
+                                    <input type="number" class="form-control" name="age" id="age" placeholder="Enter age"
+                                        value="{{ user.age }}">
+                                </div>
+                            <div class="form-group col-sm-6">
+                                <label for="email">
+                                    <h4>Email</h4>
+                                </label>
+                                <input type="email" class="form-control" name="email" id="email"
+                                    placeholder="you@email.com" value="{{ user.email }}">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <label for="gender">
+                                    <h4>Gender</h4>
+                                </label>
+
+                                <div class="input-group input-group-sm mb-2">
+                                    <select class="custom-select" name="gender" id="gender">
+                                        <option>Choose...</option>
+                                        <option value="Male"
+                                            {% if user.gender == 'Male' %}selected{% endif %}>Male
+                                        </option>
+                                        <option value="Female"
+                                            {% if user.gender == 'Female' %}selected{% endif %}>Female
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="first_language">
+                                    <h4>First Language</h4>
+                                </label>
+
+                                <div class="input-group input-group-sm mb-2">
+                                    <select class="custom-select" name="first_language" id="first_language">
+                                        <option>Choose...</option>
+                                        <option value="English"
+                                            {% if user.first_language == 'English' %}selected{% endif %}>English
+                                        </option>
+                                        <option value="IsiXhosa"
+                                            {% if user.first_language == 'IsiXhosa' %}selected{% endif %}>IsiXhosa
+                                        </option>
+                                        <option value="Sesotho"
+                                            {% if user.first_language == 'Sesotho' %}selected{% endif %}>Sesotho
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <label for="second_language">
+                                    <h4>Second Language</h4>
+                                </label>
+
+
+                                <div class="input-group input-group-sm mb-2">
+                                    <select class="custom-select" name="second_language" id="second_language">
+                                        <option>Choose...</option>
+                                        <option value="English"
+                                            {% if user.second_language == 'English' %}selected{% endif %}>English
+                                        </option>
+                                        <option value="IsiXhosa"
+                                            {% if user.second_language == 'IsiXhosa' %}selected{% endif %}>IsiXhosa
+                                        </option>
+                                        <option value="Sesotho"
+                                            {% if user.second_language == 'Sesotho' %}selected{% endif %}>Sesotho
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="third_language">
+                                    <h4>Third Language</h4>
+                                </label>
+
+
+                                <div class="input-group input-group-sm mb-2">
+                                    <select class="custom-select" name="third_language" id="third_language">
+                                        <option>Choose...</option>
+                                        <option value="English"
+                                            {% if user.third_language == 'English' %}selected{% endif %}>English
+                                        </option>
+                                        <option value="IsiXhosa"
+                                            {% if user.third_language == 'IsiXhosa' %}selected{% endif %}>IsiXhosa
+                                        </option>
+                                        <option value="Sesotho"
+                                            {% if user.third_language == 'Sesotho' %}selected{% endif %}>Sesotho
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <br>
+                                <button class="btn btn-card" type="submit">Save</button>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <form class="form" id="registrationForm2">
+
+
+                        <div class="form-group">
+
+                            <div class="col-sm-6">
+                                <label for="phone">
+                                    <h4>Phone</h4>
+                                </label>
+                                <input type="text" class="form-control" name="phone" id="phone2"
+                                    placeholder="Enter phone" title="Enter your phone number if any.">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label for="mobile">
+                                    <h4>Mobile</h4>
+                                </label>
+                                <input type="text" class="form-control" name="mobile" id="mobile"
+                                    placeholder="Enter mobile number" title="Enter your mobile number if any.">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <div class="col-sm-6">
+                                <label for="email">
+                                    <h4>Location</h4>
+                                </label>
+                                <input type="email" class="form-control" id="location" placeholder="somewhere"
+                                    title="Enter a location">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-sm-6">
+                                <label for="password">
+                                    <h4>Password</h4>
+                                </label>
+                                <input type="password" class="form-control" name="password" id="password"
+                                    placeholder="password" title="Enter your password.">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <br>
+                                <button class="btn btn-success" type="submit"><i
+                                        class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                                <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i>
+                                    Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                    <form class="form" id="registrationForm3">
+
+
+
+
+                        <div class="form-group">
+
+                            <div class="col-sm-6">
+                                <label for="phone">
+                                    <h4>Phone</h4>
+                                </label>
+                                <input type="text" class="form-control" name="phone" id="phone3"
+                                    placeholder="Enter phone" title="Enter your phone number if any.">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-sm-6">
+                                <label for="password">
+                                    <h4>Password</h4>
+                                </label>
+                                <input type="password" class="form-control" name="password" id="password3"
+                                    placeholder="password" title="Enter your password.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-sm-6">
+                                <label for="password2">
+                                    <h4>Verify</h4>
+                                </label>
+                                <input type="password" class="form-control" name="password2" id="password2"
+                                    placeholder="password2" title="Enter your password2.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <br>
+                                <button class="btn btn-success" type="submit"><i
+                                        class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                                <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i>
+                                    Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+        </div>
+        <!--/col-9-->
+    </div>
+    <!--/row-->
+</div>
+
+{% endblock %}
+
+
+
+{% block script %}
+    
+    $(document).ready(function () {
+        $("#updated").hide();
+
+        $('#registrationForm').submit(function (e) {
+            $.post("{% url 'edit_profile' %}", $(this).serialize(), function (data) {
+
+                $("#updated").show();
+
+
+            });
+            e.preventDefault();
+        });
+
+    });
+{% endblock %}
+
+
