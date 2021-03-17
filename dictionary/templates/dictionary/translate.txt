@@ -1,0 +1,206 @@
+{% extends "base_generic.html" %}
+
+{% block nav-items %}
+<li class="nav-item d-none d-lg-inline dropdown no-arrow mx-1">
+  <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Language: en</span>
+  </a>
+
+  <!-- Dropdown - Alerts -->
+  <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="languageDropdown">
+    <h6 class="dropdown-header">Download Corpora</h6>
+    <a class="dropdown-item d-flex align-items-center " href="#">
+      <div>
+        <div class="font-weight-bold">English</div>
+        <div class="small text-gray-500">prompts: {{english_dictionary.count}} </div>
+        
+      </div>
+    </a>
+    <a class="dropdown-item d-flex align-items-center" href="#">
+      <div>
+        <div class="font-weight-bold">IsiXhosa</div>
+        <div class="small text-gray-500">prompts: </div>
+      </div>
+    </a>
+    <a class="dropdown-item d-flex align-items-center" href="#">
+      <div>
+        <div class="font-weight-bold">Sesotho</div>
+        <div class="small text-gray-500">prompts: </div>
+      </div>
+    </a>
+  </div>
+</li>
+
+<li class="nav-item d-none d-lg-inline">
+  <a class="nav-link " href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#signInModal">
+    <span class="mr-2 text-gray-600 small">Sign In</span>
+  </a>
+  <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="SignInModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="SignInModalLabel">Have an account ? Login !</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+  
+        <!-- ******************************************** -->
+        <div class="row justify-content-center">
+          <div class="col-xl-10 col-lg-12 col-md-9">
+
+              <!-- Nested Row within Card Body -->
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="p-5">
+                    <form class="user" method='post'>
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <input type="text" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                      </div>
+                      <div class="form-group">
+                        <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                      </div>
+                      <div class="form-group">
+                        <div class="custom-control custom-checkbox small">
+                          <input type="checkbox" class="custom-control-input" id="customCheck">
+                          <label class="custom-control-label" for="customCheck">Remember Me</label>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
+                      <hr>
+                      <a href="index.html" class="btn btn-google btn-user btn-block">
+                        <i class="fab fa-google fa-fw"></i> Login with Google
+                      </a>
+                      <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                        <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
+                      </a>
+                    </form>
+                    <hr>
+                    <div class="text-center">
+                      <a class="small" href="forgot-password.html">Forgot Password?</a>
+                    </div>
+                    <div class="text-center">
+                      <a class="small" href="#" data-dismiss="modal" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#signUpModal">Create an Account!</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+          </div>
+        </div>
+        <!-- ******************************************** -->
+        </div>
+      </div>
+</div>
+</li>
+<li class="nav-item d-none d-lg-inline">
+  <a class="nav-link " href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#signUpModal">
+    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Sign Up</span>
+  </a>
+
+  <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signUpModalLabel">Create an Account !</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+
+        <!-- ******************************************** -->
+        <div class="row justify-content-center">
+          <div class="col-xl-10 col-lg-12 col-md-9">
+
+                <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="p-5">
+                  <form class="user">
+                    <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="First Name">
+                      </div>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control form-control-user" id="exampleLastName" placeholder="Last Name">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <input type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Email Address">
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                      </div>
+                      <div class="col-sm-6">
+                        <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Repeat Password">
+                      </div>
+                    </div>
+                    <a href="login.html" class="btn btn-primary btn-user btn-block">
+                      Register Account
+                    </a>
+                    <hr>
+                    <a href="index.html" class="btn btn-google btn-user btn-block">
+                      <i class="fab fa-google fa-fw"></i> Register with Google
+                    </a>
+                    <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                      <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
+                    </a>
+                  </form>
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" href="forgot-password.html">Forgot Password?</a>
+                  </div>
+                  <div class="text-center">
+                    <a class="small" href="#" data-dismiss="modal" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#signInModal">Already have an account? Login!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+        
+          </div>
+        </div>
+        <!-- ******************************************** -->  
+      </div>
+    </div>
+  </div>
+</li>
+{% endblock nav-items %}
+
+{% block content %}
+ <h1>translation</h1>
+ <form action="{% url 'translate' %}">
+    <div class="mb-4">
+      <div class="container-fluid">
+        <div class="card-header">
+          <div class="row">
+              
+              <div class="form-group">
+                <select class="form-control " type="text"  id="exampleInputLanguage1" name="Language1">
+                    <option value="English">English</option>
+                    <option value="Sesotho">Sesotho</option>
+                    <option value="IsiXhosa">IsiXhosa</option>
+                  </select>
+
+                <input name="Text" type="text" placeholder="Enter word/phrase">
+              </div>
+              <div class="form-group">
+                  <select class="form-control " type="text"  id="exampleInputLanguage1" name="Language2">
+                      <option value="English">English</option>
+                      <option value="Sesotho">Sesotho</option>
+                      <option value="IsiXhosa">IsiXhosa</option>
+                    </select>
+  
+                  <input type="text" placeholder="Translation" readonly value={{ translation }}>
+                  <label> {{ translation }}</label><br>
+                </div>          
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-user btn-block">Translate</button>
+    </form>
+
+{% endblock content %}
+

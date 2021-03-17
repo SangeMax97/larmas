@@ -1,0 +1,97 @@
+<div class="card-header">
+    <div class="row">
+        <h1 class="h3 mb-0 text-gray-800">{{ prompt.text }}</h1>
+        <!-- <div >
+            <a class="icon-link" href=""><i class="fas fa-fw fa-volume-up"></i></a>
+            <a class="icon-link" href=""><i class="fas fa-fw fa-video"></i></a>
+        </div> -->
+    </div>
+    <!-- <div class="row">
+        <a href="#">synonyms</a>
+        <div class="divider d-none d-sm-block"></div>
+        <a href="#">translations</a>
+        <div class="divider d-none d-sm-block"></div>
+        <a href="#">all example usages</a>
+    </div> -->
+</div>
+
+{% for metadata in prompt.languagemetadata_set.all %}
+    <div class="m-1">
+        <div class="mb-4">
+            <div>part of speech: {{ metadata.part_of_speech }}</div>
+            <div>definition: {{ metadata.definition }}</div>
+            <div>usage: {{ metadata.usage }}</div>
+        </div>  
+    </div>
+{% endfor %}
+
+
+<!-- dictionary card -->
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12">
+            <h4>
+                {{ prompt.text }}
+                <span class="mx-2" style="font-size: 16px;">
+                    <a  href="#"><i class="fas fa-volume-up card-a"></i></a>
+                </span>
+                <span class="ml-1" style="font-size: 16px;">
+                    <a  href="#"><i class="fas fa-video card-a"></i></a>
+                </span>
+            </h4>
+            
+            <hr class="my-1 pb-2 ">
+    
+        </div>  
+        
+        <div class="col-12">
+            {% for metadata in prompt.languagemetadata_set.all %}
+                {{metadata}}
+                <div class="metadata">
+                    <div class="col-12 mr-2">
+                            <p class="font-italic" >{{ metadata.part_of_speech }}</p>
+                    </div>
+                    <ol>
+                        <li>
+                            <div class="col-12 mr-2">
+                                    <p class="text-justify font-weight-bold">{{ metadata.definition }}</p>
+                            </div>
+                            <div class="col-12 mr-2">
+                                    <p class="text-justify font-weight-light">{{ metadata.usage }}</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            {% endfor %}
+        </div>  
+
+        <div class="col-12 text-center">
+            <a>
+                <i class="fas fa-chevron-circle-down card-a"></i>
+            </a>
+        </div>   
+
+        
+    </div>  
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- add metadata of a prompt -->
+
+{% with match=prompt.text %}
+    <a href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#addPrompt" class="icon-link"><i class="fas fa-fw fa-plus-circle"></i></a>
+    {% include "corpus/snippets/addprompt.html" %}    
+{% endwith %}
+
+

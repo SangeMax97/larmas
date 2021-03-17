@@ -1,0 +1,201 @@
+
+
+<div class="container page-section">
+    <div class="row">
+        <div class="col-xs-12">
+                <h3 style="margin-top:0;" class="hidden-xs"> {{match}} Pronunciations</h3>
+        </div>
+    </div>
+
+
+    <ul id="pronunciation-list" class="list-unstyled">
+        <li>
+            <button type="button" class="play-audio btn btn-primary btn-xs"><span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> Play</button>
+            Automated Male (English)
+
+            <div class="ask" style="display: block;">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <span class="question">Is this an accurate pronunciation? </span>
+                        <span class="answers"><input type="submit" name="response" value="Yes" class="btn btn-success"> <input type="submit" name="response" value="No" class="btn btn-danger"> <input type="submit" name="response" value="Not Sure" class="btn btn-default"></span>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+                            <li data-say="Steve" data-source="polly" data-gender="Female" data-voice="Joanna">
+            <button type="button" class="play-audio btn btn-primary btn-xs"><span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> Play</button>
+            Automated Female (English)
+
+            <div class="ask" style="display: block;">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <span class="question">Is this an accurate pronunciation? </span>
+                        <span class="answers"><input type="submit" name="response" value="Yes" class="btn btn-success"> <input type="submit" name="response" value="No" class="btn btn-danger"> <input type="submit" name="response" value="Not Sure" class="btn btn-default"></span>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+    
+                            <li data-say="Steve" data-id="103260" data-source="user">
+
+            <button type="button" class="play-audio btn btn-primary btn-xs"><span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> Play</button>
+            User from California, United States
+            <div class="ask" style="display: block;">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <span class="question">Is this an accurate pronunciation? </span>
+                        <span class="answers"><input type="submit" name="response" value="Yes" class="btn btn-success"> <input type="submit" name="response" value="No" class="btn btn-danger"> <input type="submit" name="response" value="Not Sure" class="btn btn-default"></span>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+        
+    </ul>
+        
+
+
+</div>
+
+
+
+
+
+<!-- ______________________________________________________________________________________________________________________________________________________________________________________ -->
+
+
+
+<div class="container page-section">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2 id="pronunciation">How to Pronounce {{match}}</h2>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-sm-push-6">
+
+				<h3 style="margin-top:0;" class="hidden-xs"> {{match}} Pronunciations</h3>
+
+				
+            </div>
+            
+			<div class="col-xs-12 col-sm-6 col-sm-pull-6">
+
+				<div class="name-ask">
+
+					<div class="ask">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<span class="question">How difficult is it to pronounce  {{match}}? </span>
+
+								<span class="answers"><input type="submit" name="response" value="Easy" class="btn btn-sm btn-primary"> <input type="submit" name="response" value="Average" class="btn btn-sm btn-primary"> <input type="submit" name="response" value="Difficult" class="btn btn-sm btn-primary"> <input type="submit" name="response" value="Not Sure" class="btn btn-sm btn-default"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="ask" style="display: none;">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<span class="question">Can  {{match}} be pronounced multiple ways? </span>
+
+								<span class="answers"><input type="submit" name="response" value="Yes" class="btn btn-sm btn-success"> <input type="submit" name="response" value="No" class="btn btn-sm btn-danger"> <input type="submit" name="response" value="Not Sure" class="btn btn-sm btn-default"></span>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div id="recording_div" class="panel panel-default" style="display: none">
+					<div class="panel-body" style="background-color: #eeeeee;">
+						<div class="row">
+							<div class="col-xs-12">
+								<a href="#" onclick="record(); return false;" class="btn btn-danger center-block" style="margin-bottom: 10px" id="record_link"><i class="fa fa-microphone"></i> Record your pronunciation</a>
+								<a href="#" onclick="stopRecording(); return false;" class="btn btn-danger center-block" style="margin-bottom: 10px; display: none" id="recording_link"><i class="fa fa-circle"></i> Recording. Click to stop.</a>
+							</div>
+							<div class="col-xs-12" id="recording_desc">
+								<small>
+									We noticed you have a microphone. If you know how to pronounce  {{match}}, just click the button to record. We'll save it, review it, and post it to help others.
+								</small>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+				
+
+    </div>
+    
+
+
+    <!-- ________________________________________________ -->
+
+    <li class="nav-item ">
+        <a class="nav-link " href="#" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#signInModal">
+          <span class="mr-2 text-gray-600 small">Sign In</span>
+        </a>
+        <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="SignInModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="SignInModalLabel">Have an account ? Login !</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+        
+              <!-- ******************************************** -->
+              <div class="row justify-content-center">
+                <div class="col-xl-10 col-lg-12 col-md-9">
+      
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="p-5">
+                          <form class="user" method='post'>
+                            {% csrf_token %}
+                            <div class="form-group">
+                              <input type="text" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                            </div>
+                            <div class="form-group">
+                              <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                              <div class="custom-control custom-checkbox small">
+                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                <label class="custom-control-label" for="customCheck">Remember Me</label>
+                              </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
+                            <hr>
+                            <a href="index.html" class="btn btn-google btn-user btn-block">
+                              <i class="fab fa-google fa-fw"></i> Login with Google
+                            </a>
+                            <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                              <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
+                            </a>
+                          </form>
+                          <hr>
+                          <div class="text-center">
+                            <a class="small" href="forgot-password.html">Forgot Password?</a>
+                          </div>
+                          <div class="text-center">
+                            <a class="small" href="#" data-dismiss="modal" aria-haspopup="true" aria-expanded="false" data-toggle="modal" data-target="#signUpModal">Create an Account!</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            
+                </div>
+              </div>
+              <!-- ******************************************** -->
+              </div>
+            </div>
+      </div>
+      </li>
+      

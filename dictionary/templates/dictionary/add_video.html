@@ -1,0 +1,208 @@
+<!-- add video -->
+{% include "record/static.html" %}
+{% block content %} 
+
+<style>
+    blockquote {
+        border:none;
+        font-family:Georgia, "Times New Roman", Times, serif;
+        margin-bottom:-30px;
+        quotes: "\201C""\201D""\2018""\2019";
+    }
+    
+    blockquote h3 {
+    font-size:20px;
+    }
+    
+    blockquote h3:before { 
+    content: open-quote;
+    font-weight: bold;
+    font-size:30px;
+    color:#4e73df;
+    margin-right: 10px;
+    } 
+    blockquote h3:after { 
+    content: close-quote;
+    font-weight: bold;
+    font-size:30px;
+    color:#4e73df;
+    margin-left: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-6">
+            <form class="text-form" id="audio_form">
+
+
+                <div class="form-group">
+                    <label class="mb-2">
+                        Language: <span id="languageField"></span> 
+                    </label>
+                    <div class="col-12 text-center">
+                        <blockquote ><h3 id="textField"></h3></blockquote>
+                    </div>      
+              
+                </div>
+            
+                <div style="height: 200px" class="form-group">
+                    <video id="myVideo" playsinline class="video-js vjs-default-skin"></video>
+                </div>  
+                <button id="submit" type="button" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Submit annotation</button>  
+                <button id="skip" type="button" class="btn btn-danger shadow px-3 ml-1 py-2 mb-2 rounded">Skip</button>
+            
+            </form>
+        </div>  
+        
+        <div class="col-6 border">
+            <h3>timestamp</h3>
+            
+            <div class="row mb-1">
+                <div class="form-group col-4 m-0">word</div>
+                <div class="form-group col-4 m-0">start time</div>
+                <div class="form-group col-4 m-0">end time</div>
+            </div>
+            <div id="timestampRow" class="row"></div>
+            
+        </div> 
+
+    </div>       
+
+</div>
+{% endblock content %}
+
+{% block script %}
+
+<script>
+    $(document).ready(function() {
+        $.post("{% url 'get_text' %}", {
+            'csrfmiddlewaretoken': '{{csrf_token}}',
+        }, function(response) {
+            data = response['text']
+            data = JSON.parse(data)[0]['fields']
+
+            
+            console.log(data)
+
+            text = data['text']
+            language = data['language']
+
+            $('#languageField').text(language);
+            $('#textField').text(text);
+
+            timestamps = text.split(' ');
+
+            $('#timestampRow').empty();
+
+            $.each(timestamps, function(i) {
+                console.log(timestamps[i]);
+
+                var template =`
+                <div class="form-group col-4">${timestamps[i]}</div>
+                <div class="form-group col-4">
+                    <input type="text" class="small form-control" id="start-${timestamps[i]}" placeholder="start time..">
+                </div>
+                <div class="form-group col-4">
+                    <input type="text" class="small form-control" id="end-${timestamps[i]}" placeholder="end time..">
+                </div>
+                `;
+                $('#timestampRow').append(template);
+
+            });
+
+            $('#skip').click(function() {
+                location.reload(true);
+            });
+
+        });
+    });
+</script>
+
+<script>
+    /* eslint-disable */
+    var options = {
+        controls: true,
+        fluid: false,
+        controlBar: {
+            volumePanel: false
+        },
+        plugins: {
+            record: {
+                audio: false,
+                video: true,
+                maxLength: 10,
+                debug: true
+            }
+        }
+    };
+
+    var formData = new FormData();
+    formData.append('csrfmiddlewaretoken',"{{ csrf_token }}");
+
+    // apply some workarounds for opera browser
+    applyVideoWorkaround();
+
+    var video_player = videojs('myVideo', options, function() {
+        // print version information at startup
+        var msg = 'Using video.js ' + videojs.VERSION +
+            ' with videojs-record ' + videojs.getPluginVersion('record') +
+            ' and recordrtc ' + RecordRTC.version;
+        videojs.log(msg);
+    });
+
+    // error handling
+    video_player.on('deviceError', function() {
+        console.warn('device error:', video_player.deviceErrorCode);
+    });
+
+    video_player.on('error', function(element, error) {
+        console.error(error);
+    });
+
+    // user clicked the record button and started recording
+    video_player.on('startRecord', function() {
+        console.log('started recording!');
+    });
+
+    // user completed recording and stream is available
+    video_player.on('finishRecord', function() {
+        // the blob object contains the recorded data that
+        // can be downloaded by the user, stored on server etc.
+        
+        formData.append('video_player', video_player.recordedData);
+        formData.append('name', video_player.recordedData.name);
+        formData.append('size', video_player.recordedData.size);
+        formData.append('type', video_player.recordedData.type);
+        formData.append('created', video_player.recordedData.lastModifiedDate);
+
+    });
+
+$(document).ready(function() { 
+    $('#submit').click(function(e) {
+        formData.append('language', $('#languageField').text());
+        formData.append('text', $('#textField').text());
+
+        xhr("{% url 'video_container' %}", formData, function (fName) { 
+            location.reload(true);
+        });
+
+        function xhr(url, data, callback) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    callback(location.href + request.responseText);
+                }
+            };
+            request.open('POST', url);
+            request.send(data);
+        }
+
+        e.preventDefault();
+    });
+
+});
+
+</script>
+
+{% endblock %}

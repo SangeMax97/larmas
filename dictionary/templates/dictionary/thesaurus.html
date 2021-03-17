@@ -1,0 +1,1331 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% include "dictionary/static.html" %}
+{% include "record/static.html" %}
+
+
+<script>
+  $(document).ready(function () {
+      $('.nav-link').on('click', function() {
+        var tab = $(this).text().trim();
+
+        if(tab == 'Word List') {
+          $('.right-filter').removeClass('col-2 d-md-block');
+        } else {
+          $('.right-filter').addClass('col-2 d-md-block');
+        }
+      });
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+
+  <div class="col-12">
+      <ul class="nav nav-tabs" id="myTab2" role="tablist">
+          {% for language in languages %}
+
+            <li class="nav-item">
+              <a class="nav-link {% if language == languages|first %}active{% endif %}" id="tab-{{language}}" data-toggle="tab" href="#link-{{language}}" role="tab"
+                  aria-controls="link-{{language}}" aria-selected="false">{{language}}
+              </a>
+            </li> 
+
+          {% endfor %}
+          <li class="nav-item">
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                aria-selected="true">Word List
+            </a>
+        </li>
+      </ul>
+      <hr>
+      <div class="row tab-content" id="myTabContent">
+
+      {% for key in response %}
+
+        <div class="col-12 col-md-10 tab-pane fade {% if key.language == languages|first %}show active{% endif %}" id="link-{{key.language}}" role="tabpanel" aria-labelledby="tab-{{key.language}}">
+
+          {% for word, all_meta_array in key.result %}
+
+          <div class="container-fluid">
+            <div class="row shadow p-3 mb-5 rounded word-card">
+
+              {% for all_meta in all_meta_array %}
+              <div class="col-12">
+                <h4>
+                  <p class="mb-0 text-break text-justify" style="font-size: 20px;">{{word}}</p>
+                  <span class="mx-1  my-3 text-nowrap d-block d-md-inline" style="font-size: 16px;">
+                    <a class="card-a" href="" data-toggle="modal" data-target="#speech-modal-for-{{word}}"
+                      id='speech-anchor-for-{{word}}'>
+                      <i class="fa fa-volume-up"></i> Speech
+                    </a>
+                  </span>
+                  <span class="mx-1  my-3 text-nowrap d-block d-md-inline" style="font-size: 16px;">
+                    <a class="card-a" href="" data-toggle="modal" data-target="#video-modal-for-{{word}}"
+                      id='video-anchor-for-{{word}}'>
+                      <i class="fas fa-video"></i> Sign
+                    </a>
+                  </span>
+                  <span class="mx-1  my-3 text-nowrap d-block d-md-inline" style="font-size: 16px;">
+                    <a class="card-a" href="" data-toggle="modal" data-target="#addPrompt-modal-for-{{word}}">
+                      <i class="fas fa-plus-circle"></i> Add metadata
+                    </a>
+                  </span>
+                  <span class="mx-1  my-3 text-nowrap d-block d-md-inline" style="font-size: 16px;">
+                    <a class="card-a" href="" data-toggle="modal" data-target="#synonyms-modal-for-{{word}}"
+                      id='synonyms-anchor-for-{{word}}'>
+                      <i class="fas fa-fw fa-copy"></i> Synonyms
+                    </a>
+                  </span>
+                  <span class="mx-1  my-3 text-nowrap d-block d-md-inline" style="font-size: 16px;">
+                    <a class="card-a" href="" data-toggle="modal" data-target="#antonyms-modal-for-{{word}}"
+                      id='antonyms-anchor-for-{{word}}'>
+                      <i class="fas fa-fw fa-book-open"></i> Antonyms
+                    </a>
+                  </span>
+
+
+                </h4>
+
+                <hr class="my-1 pb-2">
+
+              </div>
+
+              <!-- Modal 1: speech -->
+              <div class="modal fade" id="speech-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="speech-modal-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="speech-modal-label-for-{{word}}">{{word}}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+
+                      <div style="font-size: 14px; line-height: 24px;">
+                        <div class="row mx-1">
+                          <div class="col-6 card">
+
+                            <div class="pronounce-block-{{word}}">
+                              <p class="pt-1 pb-0 mb-0">How difficult is it to pronounce {{word}}?</p>
+                              <a href="" class="btn btn-card small mb-1 pronounce-{{word}}">Easy</a>
+                              <a href="" class="btn btn-card small mb-1 pronounce-{{word}}">Average</a>
+                              <a href="" class="btn btn-card small mb-1 pronounce-{{word}}">Difficult</a>
+                              <a href="" class="btn btn-secondary small mb-1 pronounce-{{word}}">Not Sure</a>
+                            </div>
+                            <div class="heteronym-block-{{word}}">
+                              <p class="pt-1 pb-0 mb-0">Can {{word}} be pronounced multiple ways?</p>
+                              <a href="" class="btn btn-card small mb-1 heteronym-{{word}}">Yes</a>
+                              <a href="" class="btn btn-danger small mb-1 heteronym-{{word}}">No</a>
+                              <a href="" class="btn btn-secondary small mb-1 heteronym-{{word}}">Not Sure</a>
+                            </div>
+                            <div class="vote-complete-{{word}} d-none-1 d-none-2 text-center">
+                              thank you for voting
+                            </div>
+                          </div>
+
+                          <div class="col-6 right-div">
+                            <div id='audios-for-{{word}}'></div>
+                            <div class='text-center'>
+                              <a class="card-a" href="" data-toggle="modal" data-target="#addPronounciation-modal-for-{{word}}">
+                                <i class="fa fa-microphone"></i> record your pronounciation
+                              </a>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 2: video -->
+              <div class="modal fade" id="video-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="video-modal-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="video-modal-label-for-{{word}}">{{word}}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+
+                      <div style="font-size: 14px; line-height: 24px;">
+                        <div class="row mx-1">
+                          <div class="col-6 card">
+
+                            <div class="sign-block-{{word}}">
+                              <p class="pt-1 pb-0 mb-0">How difficult is it to sign {{word}}?</p>
+                              <a href="" class="btn btn-card small mb-1 sign-{{word}}">Easy</a>
+                              <a href="" class="btn btn-card small mb-1 sign-{{word}}">Average</a>
+                              <a href="" class="btn btn-card small mb-1 sign-{{word}}">Difficult</a>
+                              <a href="" class="btn btn-secondary small mb-1 sign-{{word}}">Not Sure</a>
+                            </div>
+                            <div class="heteronym-sign-block-{{word}}">
+                              <p class="pt-1 pb-0 mb-0">Can {{word}} be signed multiple ways?</p>
+                              <a href="" class="btn btn-card small mb-1 heteronym-sign-{{word}}">Yes</a>
+                              <a href="" class="btn btn-danger small mb-1 heteronym-sign-{{word}}">No</a>
+                              <a href="" class="btn btn-secondary small mb-1 heteronym-sign-{{word}}">Not Sure</a>
+                            </div>
+                            <div class="vote-complete-{{word}} d-none-1 d-none-2 text-center">
+                              thank you for voting
+                            </div>
+                          </div>
+
+
+                          <div class="col-6">
+                            <div class='videos-for-{{word}}'></div>
+                            <div class='text-center'>
+                              <a class="card-a" href="" data-toggle="modal" data-target="#addSign-modal-for-{{word}}">
+                                <i class="fa fa-microphone"></i> record your sign
+                              </a>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 3: add metadata -->
+              <div class="modal fade" id="addPrompt-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="addPrompt-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addPrompt-label-for-{{word}}">Add {{word}} metadata</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+
+                    <!-- ******************************************** -->
+                    <div class="modal-body">
+
+                      <div style="font-size: 14px; line-height: 24px;">
+
+
+                        <div class="row justify-content-center">
+                          <div class="col-9">
+
+                            <form id="add_prompt_form-for-{{word}}" class="user">
+                              {% csrf_token %}
+                              <div class="form-group">
+                                <input type="hidden" value={{word}} name="Text">
+                              </div>
+                              <div class="form-group">
+                                <div class="font-weight-bold">Definition:</div>
+                                <input type="text" class="form-control" id="exampleInputDefinition" name="Definition">
+                              </div>
+                              <div class="form-group">
+                                <div class="font-weight-bold">Example use:</div>
+                                <input type="text" class="form-control" id="exampleInputUsage" name="Usage">
+                              </div>
+                              <div class="form-group">
+                                <div class="font-weight-bold">Part of speech:</div>
+                                <select class="form-control " type="text" id="exampleInputPOS" name="POS">
+                                  <option value="">choose</option>
+                                  <option value="verb">verb</option>
+                                  <option value="noun">noun</option>
+                                  <option value="adjective">adjective</option>
+                                  <option value="adverb">adverb</option>
+                                  <option value="pronoun">pronoun</option>
+                                  <option value="preposition">preposition</option>
+                                  <option value="conjunction">conjunction</option>
+                                  <option value="particle">particle</option>
+                                  <option value="article">article</option>
+                                  <option value="interjection">interjection</option>
+                                </select>
+                              </div>
+
+
+                              <button type="submit" class="btn btn-primary btn-user btn-block">Add</button>
+
+                            </form>
+
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+
+
+
+
+                    <!-- ******************************************** -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 4: synonyms -->
+              <div class="modal fade" id="synonyms-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="synonyms-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="synonyms-label-for-{{word}}">Synonyms for {{word}}</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+
+                    <!-- ******************************************** -->
+
+                    <div class="modal-body">
+
+                      <div style="font-size: 14px; line-height: 24px;">
+                        <div class="row mx-1">
+
+                          <div class="col-12">
+                            <div class='synonyms-for-{{word}} row'></div>
+
+                            <div class='text-center'>
+                              <a class="card-a" href="" data-toggle="modal" data-target="#addSynonym-modal-for-{{word}}">
+                                <i class="fa fa-microphone"></i> add synonyms
+                              </a>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 5: antonyms -->
+              <div class="modal fade" id="antonyms-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="antonyms-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="antonyms-label-for-{{word}}">Antonyms for {{word}}</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+
+                    <!-- ******************************************** -->
+
+                    <div class="modal-body">
+
+                      <div style="font-size: 14px; line-height: 24px;">
+                        <div class="row mx-1">
+
+                          <div class="col-12">
+                            <div class='antonyms-for-{{word}} row'></div>
+
+                            <div class='text-center'>
+                              <a class="card-a" href="" data-toggle="modal" data-target="#addAntonym-modal-for-{{word}}">
+                                <i class="fa fa-microphone"></i> add antonyms
+                              </a>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 6: add pronounciation -->
+              <div class="modal fade" id="addPronounciation-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="addPronounciation-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addPronounciation-label-for-{{word}}">Add pronounciation for {{word}}</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+
+                    <!-- ******************************************** -->
+
+                    <div class="modal-body">
+
+                      <div style="font-size: 14px; line-height: 24px;">
+
+                        <div class="row justify-content-center">
+                          <div class="col-9">
+
+                            <form class="text-form" id="audio-form-for-{{word}}">
+                              <div style="height: 200px" class="form-group">
+                                <audio id="myAudio-for-{{word}}" class="video-js vjs-default-skin"></audio>
+                              </div>
+                              <button type="submit" class="btn btn-primary btn-user btn-block">Add audio</button>
+                            </form>
+
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+
+                    <!-- ******************************************** -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 7: add sign -->
+              <div class="modal fade" id="addSign-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="addSign-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addSign-label-for-{{word}}">Add sign for {{word}}</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+
+                    <!-- ******************************************** -->
+
+                    <div class="modal-body">
+
+                      <div style="font-size: 14px; line-height: 24px;">
+
+                        <div class="row justify-content-center">
+                          <div class="col-9">
+
+                            <form class="text-form" id="video-form-for-{{word}}">
+                              <div style="height: 200px" class="form-group">
+                                <video id="myVideo-for-{{word}}" class="video-js vjs-default-skin"></video>
+                              </div>
+                              <button type="submit" class="btn btn-primary btn-user btn-block">Add video</button>
+                            </form>
+
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+
+                    <!-- ******************************************** -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 8: add synonym -->
+              <div class="modal fade" id="addSynonym-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="addSynonym-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addSynonym-label-for-{{word}}">Add synonyms for {{word}}</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+
+                    <!-- ******************************************** -->
+                    <div class="row justify-content-center">
+                      <div class="col-xl-10 col-lg-12 col-md-9">
+
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="p-5">
+                              <form id="synonym_form-for-{{word}}" class="user">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                  <input type="hidden" value={{word}} name="text">
+                                  <input type="hidden" value='synonym' name="thesaurus">
+                                </div>
+                                <div class="form-group">
+                                  <div class="font-weight-bold">Synonym 1:</div>
+                                  <input type="text" class="form-control" id="Synonym_1-for-{{word}}" name="Synonym_1">
+                                </div>
+                                <div class="form-group">
+                                  <div class="font-weight-bold">Synonym 2:</div>
+                                  <input type="text" class="form-control" id="Synonym_2-for-{{word}}" name="Synonym_2">
+                                </div>
+                                <div class="form-group">
+                                  <div class="font-weight-bold">Synonym 2:</div>
+                                  <input type="text" class="form-control" id="Synonym_3-for-{{word}}" name="Synonym_3">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-user btn-block">Add</button>
+
+                              </form>
+
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    <!-- ******************************************** -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal 9: add antonym -->
+              <div class="modal fade" id="addAntonym-modal-for-{{word}}" tabindex="-1" role="dialog"
+                aria-labelledby="addAntonym-label-for-{{word}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addAntonym-label-for-{{word}}">Add antonyms for {{word}}</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+
+                    <!-- ******************************************** -->
+                    <div class="row justify-content-center">
+                      <div class="col-xl-10 col-lg-12 col-md-9">
+
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="p-5">
+                              <form id="antonym_form-for-{{word}}" class="user">
+
+                                {% csrf_token %}
+                                <div class="form-group">
+                                  <input type="hidden" value={{word}} name="text">
+                                  <input type="hidden" value='antonym' name="thesaurus">
+
+                                </div>
+                                <div class="form-group">
+                                  <div class="font-weight-bold">Antonym 1:</div>
+                                  <input type="text" class="form-control" id="Antonym_1-for-{{word}}" name="Antonym_1">
+                                </div>
+                                <div class="form-group">
+                                  <div class="font-weight-bold">Antonym 2:</div>
+                                  <input type="text" class="form-control" id="Antonym_2-for-{{word}}" name="Antonym_2">
+                                </div>
+                                <div class="form-group">
+                                  <div class="font-weight-bold">Antonym 2:</div>
+                                  <input type="text" class="form-control" id="Antonym_3-for-{{word}}" name="Antonym_3">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-user btn-block">Add</button>
+
+                              </form>
+
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    <!-- ******************************************** -->
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                $(document).ready(function () {
+            
+
+                  $('#add_prompt_form-for-{{word|escapejs}}').submit(function (e) {
+                    console.log('add_prompt_form-for-{{word|escapejs}}');
+                    //action="{% url 'add_prompt' %}" 
+                    $.post("{% url 'add_prompt' %}", $(this).serialize(), function (data) {
+                      $("#div-for-{{word|escapejs}}").load(" #div-for-{{word|escapejs}}", function () {
+                        $('#add_prompt_form-for-{{word|escapejs}}').find('input:text').val('');
+                        $('#add_prompt_form-for-{{word|escapejs}}').find('select:text').val('');
+                        $('#addPrompt-modal-for-{{word|escapejs}}').modal('toggle');
+                      });
+                    });
+                    e.preventDefault();
+                  });
+
+                  $('.pronounce-{{word|escapejs}}').click(function (e) {
+                    var serial_data = {
+                      'csrfmiddlewaretoken': '{{csrf_token}}',
+                      'vote': this.innerHTML,
+                      'prompt': '{{word|escapejs}}',
+                      'vote_category': 'pronounciation',
+                    }
+                    $.post("{% url 'vote' %}", serial_data, function (data) {
+                      console.log('pronounce vote for {{word|escapejs}} successful');
+                      $('.pronounce-block-{{word|escapejs}}').hide('slow');
+                      $('.vote-complete-{{word|escapejs}}').removeClass('d-none-1');
+
+                    });
+                    e.preventDefault();
+                  });
+
+                  $('.heteronym-{{word|escapejs}}').click(function (e) {
+                    var serial_data = {
+                      'csrfmiddlewaretoken': '{{csrf_token}}',
+                      'vote': this.innerHTML,
+                      'prompt': '{{word|escapejs}}',
+                      'vote_category': 'heteronym',
+                    }
+                    $.post("{% url 'vote' %}", serial_data, function (data) {
+                      console.log('heteronym vote for {{word|escapejs}} successful');
+                      $('.heteronym-block-{{word|escapejs}}').hide('slow');
+                      $('.vote-complete-{{word|escapejs}}').removeClass('d-none-2');
+                    });
+                    e.preventDefault();
+                  });
+
+                  $('.sign-{{word|escapejs}}').click(function (e) {
+                    var serial_data = {
+                      'csrfmiddlewaretoken': '{{csrf_token}}',
+                      'vote': this.innerHTML,
+                      'prompt': '{{word|escapejs}}',
+                      'vote_category': 'sign',
+                    }
+                    $.post("{% url 'vote' %}", serial_data, function (data) {
+                      console.log('sign vote for {{word|escapejs}} successful');
+                      $('.sign-block-{{word|escapejs}}').hide('slow');
+                      $('.vote-complete-{{word|escapejs}}').removeClass('d-none-1');
+
+                    });
+                    e.preventDefault();
+                  });
+
+                  $('.heteronym-sign-{{word|escapejs}}').click(function (e) {
+                    var serial_data = {
+                      'csrfmiddlewaretoken': '{{csrf_token}}',
+                      'vote': this.innerHTML,
+                      'prompt': '{{word|escapejs}}',
+                      'vote_category': 'heteronym_sign',
+                    }
+                    $.post("{% url 'vote' %}", serial_data, function (data) {
+                      console.log('heteronym vote for {{word|escapejs}} successful');
+                      $('.heteronym-sign-block-{{word|escapejs}}').hide('slow');
+                      $('.vote-complete-{{word|escapejs}}').removeClass('d-none-2');
+                    });
+                    e.preventDefault();
+                  });
+
+                  var num_posts_speech = 0;
+                  var num_posts_sign = 0;
+
+                  $('#speech-anchor-for-{{word|escapejs}}').click(function (e) {
+
+                    console.log(num_posts_speech);
+                    if (num_posts_speech == 0) {
+                      var serial_data = {
+                        'csrfmiddlewaretoken': '{{csrf_token}}',
+                        'prompt': '{{word|escapejs}}',
+                        'metadata_category': 'speech',
+                      }
+                      $.post("{% url 'get_metadata' %}", serial_data, function (data) {
+                        num_posts_speech = 1;
+                        console.log('opened-speech-modal-for-{{word|escapejs}}');
+
+                        var metadata = data['metadata'];
+                        $.each(metadata, function (i) {
+
+                          var audio_src = metadata[i]['audio'];
+                          var gender = metadata[i]['user__gender'];
+                          var language = metadata[i]['user__first_language'];
+                          if (language == "") {
+                            language = 'Unkown'
+                          }
+                          var audio_div = $('<div></div>').addClass('col-12 mb-1');
+                          var source = $('<source>').attr({
+                            'src': '/' + audio_src,
+                            'type': 'audio/webm'
+                          });
+
+                          $('<span></span>').text(`${gender} (${language})`).appendTo(audio_div);
+                          $('<audio></audio>').attr("controls", '').append(source).appendTo(audio_div);
+
+                          var accuracy_div = $('<div></div>').addClass('my-2 card');
+
+                          var accuracy_header_div = $('<div></div>').addClass('mx-2');
+                          var accuracy_header_p = $('<p></p>').addClass('pt-1 pb-0 mb-0');
+                          accuracy_header_p.text('Is this an accurate pronunciation?');
+                          accuracy_header_p.appendTo(accuracy_header_div);
+
+                          var accuracy_body_div = $('<div></div>').addClass('mx-1 pb-1');
+                          var yes = $('<a></a>').addClass('btn btn-card small mb-1 mr-1 pronounce-audio-{{word|escapejs}}')
+                            .text('Yes').attr({
+                              'href': '',
+                              'id': `${audio_src}`
+                            });
+                          var no = $('<a></a>').addClass(
+                            'btn btn-danger small mb-1 mr-1 pronounce-audio-{{word|escapejs}}').text('No').attr({
+                            'href': '',
+                            'id': `${audio_src}`
+                          });
+                          var not_sure = $('<a></a>').addClass(
+                            'btn btn-secondary small mb-1 mr1 pronounce-audio-{{word|escapejs}}').text('Not Sure').attr({
+                            'href': '',
+                            'id': `${audio_src}`
+                          });
+
+                          accuracy_body_div.append(yes);
+                          accuracy_body_div.append(no);
+                          accuracy_body_div.append(not_sure);
+
+                          accuracy_header_div.appendTo(accuracy_div);
+                          accuracy_body_div.appendTo(accuracy_div);
+
+                          var res = audio_src.split("\\");
+                          res = res[res.length - 1];
+                          accuracy_div.appendTo($('<div></div>').attr('id', 'accuracy-block-' + res).appendTo(
+                            audio_div));
+
+                          $('#audios-for-{{word|escapejs}}').append(audio_div);
+
+                        });
+                      });
+                    }
+                  });
+
+                  $('#video-anchor-for-{{word|escapejs}}').click(function (e) {
+
+                    console.log(num_posts_sign);
+                    if (num_posts_sign == 0) {
+                      var serial_data = {
+                        'csrfmiddlewaretoken': '{{csrf_token}}',
+                        'prompt': '{{word|escapejs}}',
+                        'metadata_category': 'sign',
+                      }
+                      $.post("{% url 'get_metadata' %}", serial_data, function (data) {
+                        num_posts_sign = 1;
+                        console.log('opened-sign-modal-for-{{word|escapejs}}');
+
+                        var metadata = data['metadata'];
+                        $.each(metadata, function (i) {
+
+                          var video_src = metadata[i]['video'];
+                          var gender = metadata[i]['user__gender'];
+                          var language = metadata[i]['user__first_language'];
+
+                          var video_div = $('<div></div>').addClass('col-12 mb-1');
+                          var source = $('<source>').attr({
+                            'src': '/' + video_src,
+                            'type': 'video/webm'
+                          });
+
+                          $('<span></span>').text(`${gender} (${language})`).appendTo(video_div);
+                          $('<video></video>').attr("controls", '').addClass('w-100').append(source).appendTo(
+                            video_div);
+
+
+
+                          var accuracy_div = $('<div></div>').addClass('my-2 card');
+
+                          var accuracy_header_div = $('<div></div>').addClass('mx-2');
+                          var accuracy_header_p = $('<p></p>').addClass('pt-1 pb-0 mb-0');
+                          accuracy_header_p.text('Is this an accurate pronunciation?');
+                          accuracy_header_p.appendTo(accuracy_header_div);
+
+                          var accuracy_body_div = $('<div></div>').addClass('mx-1 pb-1');
+                          var yes = $('<a></a>').addClass('btn btn-card small mb-1 mr-1 sign-video-{{word|escapejs}}')
+                            .text('Yes').attr({
+                              'href': '',
+                              'id': `${video_src}`
+                            });
+                          var no = $('<a></a>').addClass('btn btn-danger small mb-1 mr-1 sign-video-{{word|escapejs}}')
+                            .text('No').attr({
+                              'href': '',
+                              'id': `${video_src}`
+                            });
+                          var not_sure = $('<a></a>').addClass(
+                            'btn btn-secondary small mb-1 mr1 sign-video-{{word|escapejs}}').text('Not Sure').attr({
+                            'href': '',
+                            'id': `${video_src}`
+                          });
+
+                          accuracy_body_div.append(yes);
+                          accuracy_body_div.append(no);
+                          accuracy_body_div.append(not_sure);
+
+                          accuracy_header_div.appendTo(accuracy_div);
+                          accuracy_body_div.appendTo(accuracy_div);
+
+                          var res = video_src.split("\\");
+                          res = res[res.length - 1];
+                          accuracy_div.appendTo($('<div></div>').attr('id', 'accuracy-block-' + res).appendTo(
+                            video_div));
+
+                          $('.videos-for-{{word|escapejs}}').append(video_div);
+
+                        });
+                      });
+                    }
+                  });
+
+                  $(document.body).on('click', '.pronounce-audio-{{word|escapejs}}', function (e) {
+                    var id = $(this).attr('id');
+                    var res = id.split("\\");
+                    res = 'accuracy-block-' + res[res.length - 1];
+
+                    var serial_data = {
+                      'csrfmiddlewaretoken': '{{csrf_token}}',
+                      'media': id,
+                      'vote': this.innerHTML,
+                      'prompt': '{{word|escapejs}}',
+                      'vote_category': 'speech_accuracy',
+                    }
+
+                    $.post("{% url 'vote' %}", serial_data, function (data) {
+                      $("div[id='" + res + "']").hide('slow');
+                    });
+                    e.preventDefault();
+                  });
+
+                  $(document.body).on('click', '.sign-video-{{word|escapejs}}', function (e) {
+                    var id = $(this).attr('id');
+                    var res = id.split("\\");
+                    res = 'accuracy-block-' + res[res.length - 1];
+
+                    var serial_data = {
+                      'csrfmiddlewaretoken': '{{csrf_token}}',
+                      'media': id,
+                      'vote': this.innerHTML,
+                      'prompt': '{{word|escapejs}}',
+                      'vote_category': 'sign_accuracy',
+                    }
+
+                    $.post("{% url 'vote' %}", serial_data, function (data) {
+                      $("div[id='" + res + "']").hide('slow');
+                    });
+                    e.preventDefault();
+                  });
+
+                  var num_posts_synonyms = 0;
+                  var num_posts_antonyms = 0;
+
+                  $('#synonyms-anchor-for-{{word|escapejs}}').click(function (e) {
+                    console.log('synonyms:');
+                    if (num_posts_synonyms == 0) {
+                      var serial_data = {
+                        'csrfmiddlewaretoken': '{{csrf_token}}',
+                        'prompt': '{{word|escapejs}}',
+                        'thesaurus': 'synonym',
+                      }
+
+                      $.post("{% url 'get_thesaurus' %}", serial_data, function (data) {
+                        num_posts_synonyms = 1;
+                        synonyms = data['synonyms'];
+
+                        $.each(synonyms, function (i) {
+                          var synonym = synonyms[i]['text'];
+                          console.log(synonym);
+                          var synonym_div = $('<div></div>').addClass('my-2 col-4');
+                          synonym_div.text(synonym);
+                          synonym_div.appendTo($('.synonyms-for-{{word|escapejs}}'));
+                        });
+                      });
+
+                    }
+                  });
+
+                  $('#antonyms-anchor-for-{{word|escapejs}}').click(function (e) {
+                    console.log('antonyms:');
+                    if (num_posts_antonyms == 0) {
+                      var serial_data = {
+                        'csrfmiddlewaretoken': '{{csrf_token}}',
+                        'prompt': '{{word|escapejs}}',
+                        'thesaurus': 'antonym',
+                      }
+
+                      $.post("{% url 'get_thesaurus' %}", serial_data, function (data) {
+                        num_posts_antonyms = 1
+                        antonyms = data['antonyms']
+
+                        $.each(antonyms, function (i) {
+                          var antonym = antonyms[i]['text']
+                          console.log(antonym);
+                          var antonym_div = $('<div></div>').addClass('my-2 col-4');
+                          antonym_div.text(antonym)
+                          antonym_div.appendTo($('.antonyms-for-{{word|escapejs}}'));
+                        });
+                      });
+                    }
+
+                  });
+
+                  $('#synonym_form-for-{{word|escapejs}}').submit(function (e) {
+                    console.log('synonym_form-for-{{word|escapejs}}');
+
+
+                    $.post("{% url 'add_thesaurus' %}", $(this).serialize(), function (data) {
+                      location.reload();
+                      // $("#div-for-{{word|escapejs}}").load(" #div-for-{{word|escapejs}}" , function() {
+                      //   $('#Synonym_1-for-{{word|escapejs}}').val('');
+                      //   $('#Synonym_2-for-{{word|escapejs}}').val('');
+                      //   $('#Synonym_3-for-{{word|escapejs}}').val('');
+                      //   $('#addSynonym-modal-for-{{word|escapejs}}').modal('toggle'); 
+                      // });
+
+
+                    });
+                    e.preventDefault();
+                  });
+
+                  $('#antonym_form-for-{{word|escapejs}}').submit(function (e) {
+                    console.log('antonym_form-for-{{word|escapejs}}');
+
+                    $.post("{% url 'add_thesaurus' %}", $(this).serialize(), function (data) {
+                      location.reload();
+                      // $("#div-for-{{word|escapejs}}").load(" #div-for-{{word|escapejs}}" , function() {
+                      //   $('#antonym_form-for-{{word|escapejs}}').find('input:text').val('');
+                      //   $('#antonym_form-for-{{word|escapejs}}').find('select:text').val('');
+                      //   $('#addAntonym-modal-for-{{word|escapejs}}').modal('toggle');
+                      // });
+
+                    });
+                    e.preventDefault();
+                  });
+
+                  if ($('#div-for-{{word|escapejs}} li').slice().length < 6) {
+                    $('.chevron-for-{{word|escapejs}}').hide();
+                  }
+
+                  $('#div-for-{{word|escapejs}} li').slice(5).hide();
+
+                  $('.chevron-for-{{word|escapejs}}').click(function (e) {
+                    console.log('5888');
+                    $(this).toggleClass('chevron-flip');
+                    $('#div-for-{{word|escapejs}} li').slice(5).slideToggle('fast');
+                    e.preventDefault();
+                  });
+
+
+                  var formData = new FormData();
+                  $('#addPronounciation-modal-for-{{word|escapejs}}').on('shown.bs.modal', function (e) {
+
+                    $('#speech-modal-for-{{word|escapejs}} .close').click();
+
+                    console.log('addPronounciation-modal-for-{{word|escapejs}}');
+
+                    /* eslint-disable */
+                    var options = {
+                      controls: true,
+                      fluid: false,
+                      plugins: {
+                        wavesurfer: {
+                          src: 'live',
+                          waveColor: '#36393b',
+                          progressColor: 'black',
+                          debug: true,
+                          cursorWidth: 1,
+                          msDisplayMax: 20,
+                          hideScrollbar: true
+                        },
+                        record: {
+                          audio: true,
+                          video: false,
+                          maxLength: 20,
+                          debug: true
+                        }
+                      }
+                    };
+                    formData = new FormData();
+                    formData.append('csrfmiddlewaretoken', "{{ csrf_token }}");
+
+                    // apply audio workarounds for certain browsers
+                    applyAudioWorkaround();
+
+                    // create audio_player
+                    var audio_player = videojs('myAudio-for-{{word|escapejs}}', options, function () {
+                      // print version information at startup
+                      var msg = 'Using video.js ' + videojs.VERSION +
+                        ' with videojs-record ' + videojs.getPluginVersion('record') +
+                        ', videojs-wavesurfer ' + videojs.getPluginVersion('wavesurfer') +
+                        ', wavesurfer.js ' + WaveSurfer.VERSION + ' and recordrtc ' +
+                        RecordRTC.version;
+                      videojs.log(msg);
+                    });
+
+                    // error handling
+                    audio_player.on('deviceError', function () {
+                      console.log('device error:', audio_player.deviceErrorCode);
+                    });
+
+                    audio_player.on('error', function (element, error) {
+                      console.error(error);
+                    });
+
+                    // user clicked the record button and started recording
+                    audio_player.on('startRecord', function () {
+                      console.log('started recording!');
+                    });
+
+                    // user completed recording and stream is available
+                    audio_player.on('finishRecord', function () {
+                      // the blob object contains the recorded data that
+                      // can be downloaded by the user, stored on server etc.
+                      console.log('kkkkkkkkkk000000000');
+
+                      formData.append('audio_player', audio_player.recordedData);
+                      formData.append('name', audio_player.recordedData.name);
+                      formData.append('size', audio_player.recordedData.size);
+                      formData.append('type', audio_player.recordedData.type);
+                      formData.append('created', audio_player.recordedData.lastModifiedDate);
+
+                    });
+
+                  });
+
+                  $('#audio-form-for-{{word|escapejs}}').submit(function (e) {
+                    // formData.append('type', );
+                    formData.append('language', '');
+                    formData.append('text', '{{word|escapejs}}');
+
+
+                    xhr("{% url 'audio_container' %}", formData, function () {
+                      location.reload();
+                    });
+
+                    function xhr(url, data, callback) {
+                      var request = new XMLHttpRequest();
+                      request.onreadystatechange = function () {
+                        if (request.readyState == 4 && request.status == 200) {
+                          callback(location.href + request.responseText);
+                        }
+                      };
+                      request.open('POST', url);
+                      request.send(data);
+                    }
+                    e.preventDefault();
+                  });
+
+                  $('#addSign-modal-for-{{word|escapejs}}').on('shown.bs.modal', function (e) {
+
+                    $('#video-modal-for-{{word|escapejs}} .close').click();
+
+                    console.log('addSign-modal-for-{{word|escapejs}}');
+
+                    /* eslint-disable */
+                    var options = {
+                      controls: true,
+                      fluid: false,
+                      controlBar: {
+                        volumePanel: false
+                      },
+                      plugins: {
+                        record: {
+                          audio: false,
+                          video: true,
+                          maxLength: 10,
+                          debug: true
+                        }
+                      }
+                    };
+                    formData = new FormData();
+                    formData.append('csrfmiddlewaretoken', "{{ csrf_token }}");
+
+                    // apply some workarounds for opera browser
+                    applyVideoWorkaround();
+
+                    var video_player = videojs('myVideo-for-{{word|escapejs}}', options, function () {
+                      // print version information at startup
+                      var msg = 'Using video.js ' + videojs.VERSION +
+                        ' with videojs-record ' + videojs.getPluginVersion('record') +
+                        ' and recordrtc ' + RecordRTC.version;
+                      videojs.log(msg);
+                    });
+
+                    // error handling
+                    video_player.on('deviceError', function () {
+                      console.warn('device error:', video_player.deviceErrorCode);
+                    });
+
+                    video_player.on('error', function (element, error) {
+                      console.error(error);
+                    });
+
+                    // user clicked the record button and started recording
+                    video_player.on('startRecord', function () {
+                      console.log('started recording!');
+                    });
+
+                    // user completed recording and stream is available
+                    video_player.on('finishRecord', function () {
+                      // the blob object contains the recorded data that
+                      // can be downloaded by the user, stored on server etc.
+
+                      formData.append('video_player', video_player.recordedData);
+                      formData.append('name', video_player.recordedData.name);
+                      formData.append('size', video_player.recordedData.size);
+                      formData.append('type', video_player.recordedData.type);
+                      formData.append('created', video_player.recordedData.lastModifiedDate);
+
+                    });
+                  });
+
+                  $('#video-form-for-{{word|escapejs}}').submit(function (e) {
+                    // formData.append('type', );
+                    formData.append('language', '');
+                    formData.append('text', '{{word|escapejs}}');
+
+
+                    xhr("{% url 'video_container' %}", formData, function () {
+                      location.reload();
+                    });
+
+                    function xhr(url, data, callback) {
+                      var request = new XMLHttpRequest();
+                      request.onreadystatechange = function () {
+                        if (request.readyState == 4 && request.status == 200) {
+                          callback(location.href + request.responseText);
+                        }
+                      };
+                      request.open('POST', url);
+                      request.send(data);
+                    }
+                    e.preventDefault();
+                  });
+
+                });
+              </script>
+
+              <style>
+                /* change player background color */
+                #myAudio-for-{{word|escapejs}}, #myVideo-for-{{word|escapejs}} {
+                  background-color: #4e73df;
+                }
+              </style>
+
+              <div class="col-12" id="div-for-{{word|escapejs}}">
+                {% for part_of_speech, meta_array in all_meta %}
+
+                <div class="metadata">
+                  <div class="col-12 mr-2">
+                    <p class="font-italic primary-colour"> {{part_of_speech}}</p>
+                  </div>
+                  <ol>
+                    {% for metadata in meta_array %}
+                    <li class="mb-3">
+                      <div class="col-12 mr-2">
+                        <p class="text-justify font-weight-bold small mb-0">{{ metadata.definition }}</p>
+                      </div>
+                      <div class="col-12 mr-2">
+                        <q class="text-justify font-weight-light small">{{ metadata.usage }}</q>
+                      </div>
+                    </li>
+                    {% endfor %}
+                  </ol>
+                </div>
+
+                {% endfor %}
+              </div>
+
+              <div class="col-12 text-center">
+                <a href="">
+                  <i class="fas fa-chevron-circle-down card-a chevron-for-{{word}}"></i>
+                </a>
+              </div>
+
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>         
+    
+      {% endfor %}
+
+      <div class="col-12 tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <table class="table table-hover table-striped"
+          data-toggle="table" 
+          data-sort-stable="true"  
+          data-search="true" 
+          data-pagination="true" 
+          data-show-columns="false"
+        >
+            <thead class='primary-colour'>
+                <tr>
+                  <th scope="col" data-sortable="true">Word</th>
+                  <th scope="col" data-sortable="true">Language</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                
+                {% for key in response %}
+              
+                  {% for data, k in key.result %}
+                    
+                      <tr>
+                        <td>{{data.text}}</td>
+                        <td>{{data.language}}</td>
+                      </tr>              
+
+                  {% endfor %}
+                {% endfor %}
+      </tbody>
+      </table>
+      </div>
+
+      <!-- RIGHT FILTER BOX -->
+      <div class="col-2 d-none d-md-block position-fixed right-filter">
+        <h2></h2>
+          <h3> Filter word</h3>
+          <ul>
+            <li>
+                <form action="{% url 'dictionary_search' %}" method='GET' class="navbar-search">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" id="fitler-word" name="prompt" class="p-0 m-0 form-control border-0 bg-light "
+                            placeholder="Search word" aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append  ">
+                            <button class="btn btn-primary small m-0 px-3" type="submit">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </li>
+        </ul>
+          
+          <h3> Download corpus </h3>
+          <ul>
+              <li class="selected">
+                  <a href="/rest/languages" download="full-corpus">All</a></li>
+              <li>
+                  <a href="/rest/english"  download="english-corpus">English</a></li>
+              <li>
+                  <a href="/rest/sesotho"  download="sesotho-corpus">Sesotho</a></li>
+              <li>
+                  <a href="/rest/isixhosa"  download="isixhosa-corpus">IsiXhosa</a></li>
+          </ul>
+          
+          
+
+      </div>
+
+      </div>
+
+
+
+    </div>
+
+<nav aria-label="Page navigation example" style="
+position: fixed;
+bottom: 65px;
+z-index: 90;
+">
+  <ul class="pagination ml-3">
+    <li class="page-item"><a class="page-link" href="#">A</a></li>
+    <li class="page-item"><a class="page-link" href="#">B</a></li>
+    <li class="page-item"><a class="page-link" href="#">C</a></li>
+    <li class="page-item"><a class="page-link" href="#">D</a></li>
+    <li class="page-item"><a class="page-link" href="#">E</a></li>
+    <li class="page-item"><a class="page-link" href="#">F</a></li>
+    <li class="page-item"><a class="page-link" href="#">G</a></li>
+    <li class="page-item"><a class="page-link" href="#">H</a></li>
+    <li class="page-item"><a class="page-link" href="#">I</a></li>
+    <li class="page-item"><a class="page-link" href="#">J</a></li>
+    <li class="page-item"><a class="page-link" href="#">K</a></li>
+    <li class="page-item"><a class="page-link" href="#">L</a></li>
+    <li class="page-item"><a class="page-link" href="#">M</a></li>
+    <li class="page-item"><a class="page-link" href="#">N</a></li>
+    <li class="page-item"><a class="page-link" href="#">O</a></li>
+    <li class="page-item"><a class="page-link" href="#">P</a></li>
+    <li class="page-item"><a class="page-link" href="#">Q</a></li>
+    <li class="page-item"><a class="page-link" href="#">R</a></li>
+    <li class="page-item"><a class="page-link" href="#">S</a></li>
+    <li class="page-item"><a class="page-link" href="#">T</a></li>
+    <li class="page-item"><a class="page-link" href="#">U</a></li>
+    <li class="page-item"><a class="page-link" href="#">V</a></li>
+    <li class="page-item"><a class="page-link" href="#">W</a></li>
+    <li class="page-item"><a class="page-link" href="#">X</a></li>
+    <li class="page-item"><a class="page-link" href="#">Y</a></li>
+    <li class="page-item"><a class="page-link" href="#">Z</a></li>
+  </ul>
+</nav>
+
+  <script>
+    $(document).ready(function () {
+
+      $(document.body).on('click', '.page-link', function(e) {
+        e.preventDefault();
+
+        var filter = $(this).text();
+        console.log(filter);
+
+        $.post("{% url 'change_filter' %}", {'filter_':filter, 'csrfmiddlewaretoken': '{{csrf_token}}',}, function(e) {
+          console.log(e)
+          console.log(e)
+          console.log(e)
+          console.log(e)
+          location.reload();
+        });
+
+      })
+
+
+        var xTriggered = 0;
+        $( "#fitler-word" ).keyup(function( event ) {
+          if ( event.which == 13 ) {
+            event.preventDefault();
+          } else {
+
+            var word = $("#fitler-word").val();        
+
+            $( ".word-card" ).hide();
+            $(`.word-card h4 > p:contains(${word})`).filter(function(){
+              return $(this).text().indexOf(`${word}`) == 0;
+            })
+            .parent().parent().parent()
+            .show()
+            .css( "background", "#c8ebee" );
+
+            if(word =="")   $(`.word-card h4 > p:contains(${word})`).parent().parent().parent().css( "background", "#fff" );
+            
+
+            xTriggered++;
+            var msg = "Handler for .keypress() called " + xTriggered + " time(s).";
+            console.log();
+            console.log(msg);
+
+          }
+
+          
+        });
+
+    });
+  </script>
+
+
+
+{% endblock content %}

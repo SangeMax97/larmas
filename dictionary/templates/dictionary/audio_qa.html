@@ -1,0 +1,208 @@
+
+<style>
+    blockquote {
+        border:none;
+        font-family:Georgia, "Times New Roman", Times, serif;
+        margin-bottom:-30px;
+        quotes: "\201C""\201D""\2018""\2019";
+    }
+    
+    blockquote h3 {
+    font-size:20px;
+    }
+    
+    blockquote h3:before { 
+    content: open-quote;
+    font-weight: bold;
+    font-size:30px;
+    color:#4e73df;
+    margin-right: 10px;
+    } 
+    blockquote h3:after { 
+    content: close-quote;
+    font-weight: bold;
+    font-size:30px;
+    color:#4e73df;
+    margin-left: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12">
+            <form class="text-form" id="audio_form">
+                <div class="form-group">
+                    <label class="mb-2">
+                        Language: <span id="languageField2"></span> 
+                    </label>
+                    <div class="col-12 text-center">
+                        <blockquote><h3 id="textField2"></h3></blockquote>
+                        <div id="audioDiv">
+
+                        </div>
+                    </div>      
+                </div>
+
+                <div>
+                    <p class="mb-0 px-1 btn-card rounded text-monospace">QA:</p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="audio_plays">
+                        <label class="form-check-label" for="audio_plays">
+                            The audio plays
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="audio_represents_text">
+                        <label class="form-check-label" for="audio_represents_text">
+                            The audio represents text
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="audio_clipped">
+                        <label class="form-check-label" for="audio_clipped">
+                            The audio is clipped
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="audio_offensive">
+                        <label class="form-check-label" for="audio_offensive">
+                            The audio is offensive
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="text_offensive">
+                        <label class="form-check-label" for="text_offensive">
+                            The text is offensive
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="text_spelling_errors">
+                        <label class="form-check-label" for="text_spelling_errors">
+                            The text contains spelling errors
+                        </label>
+                    </div>
+                    
+                </div>
+
+                <div>
+                    <p class="mb-0 px-1 btn-card rounded text-monospace">is this an accurate pronunciation?</p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="accurate_pronunciation" id="exampleRadios7" value="yes">
+                        <label class="form-check-label" for="exampleRadios7">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="accurate_pronunciation" id="exampleRadios8" value="no">
+                        <label class="form-check-label" for="exampleRadios8">
+                            No
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="accurate_pronunciation" id="exampleRadios9" value="not_sure">
+                        <label class="form-check-label" for="exampleRadios9">
+                            Not sure
+                        </label>
+                    </div>
+                </div>
+                
+                <button id="submit2" type="button" class="btn btn-card shadow px-3 py-2 my-2 rounded">Submit QA</button>  
+                <button id="skip2" type="button" class="btn btn-danger shadow px-3 ml-1 py-2 my-2 rounded">Skip</button>
+            
+            </form>
+        </div>  
+    </div>       
+
+</div>  
+
+
+
+
+<script>
+    $(document).ready(function() {
+
+        function get_audio() {
+            $.post("{% url 'get_audio' %}", {
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+            }, function(response) {
+                data = response['text']
+                data = JSON.parse(data)[0]['fields']
+
+                audio = response['audio']
+                
+                console.log(audio)
+
+                text = data['text']
+                language = data['language']
+
+                $('#languageField2').text(language);
+                $('#textField2').text(text);
+
+
+                var audio_div = $('#audioDiv');
+                audio_div.empty();
+                
+                var source = $('<source>').attr({
+                    'src': '/' + audio,
+                    'type': 'audio/webm'
+                });
+
+                $('<audio></audio>').attr("controls", '').append(source).appendTo(audio_div);
+
+            });
+        };
+
+        function qa_audio() {
+
+            var language = $('#languageField2').text();
+            var text  = $('#textField2').text();
+            var audio = $('source').attr('src');
+            audio =  audio.substring(1);
+
+            var accurate_pronunciation = $('input[name=accurate_pronunciation]:checked').val()
+
+            var audio_plays = $('#audio_plays').is(':checked');
+            var audio_represents_text = $('#audio_represents_text').is(':checked');
+            var audio_clipped = $('#audio_clipped').is(':checked');
+            var audio_offensive = $('#audio_offensive').is(':checked');
+            var text_offensive = $('#text_offensive').is(':checked');
+            var text_spelling_errors = $('#text_spelling_errors').is(':checked');
+
+            $.post("{% url 'qa' %}", {
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+                'qa_category': 'audio',
+                'media': audio,
+                'accurate_pronunciation': accurate_pronunciation,
+                'audio_plays': audio_plays,
+                'audio_represents_text': audio_represents_text,
+                'audio_clipped': audio_clipped,
+                'audio_offensive': audio_offensive,
+                'text_offensive': text_offensive,
+                'text_spelling_errors': text_spelling_errors,
+            }, function(response) {
+                console.log(response);
+
+                $('input:checkbox').prop('checked', false);
+                $('input:radio').prop('checked', false);
+
+            });
+
+        }
+
+        get_audio();
+
+        $('#skip2').click(function() {
+            get_audio();
+        });
+
+        $('#submit2').click(function() {
+            // submit qa
+            // get another audio
+            qa_audio();
+            get_audio();
+        });
+
+
+
+    });
+</script>

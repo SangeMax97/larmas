@@ -1,0 +1,71 @@
+<div class="modal fade" id="addPrompt" tabindex="-1" role="dialog" aria-labelledby="addPromptLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="addPromptLabel">Add {{match}} to corpus</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        </div>
+
+        <!-- ******************************************** -->
+        <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+                <!-- Nested Row within Card Body -->
+            <div class="row">
+            <div class="col-lg-12">
+                <div class="p-5">
+                <form action="{% url 'add_prompt' %}" class="user">
+                    {% csrf_token %}
+                    <div class="form-group">
+                    <input type="hidden" value={{match}} name="Text">
+                    </div>
+                    <div class="form-group">
+                    <div class="font-weight-bold">Language:</div>
+                    <select class="form-control " type="text"  id="exampleInputLanguage" name="Language">
+                        <option value="">choose</option>
+                        <option value="English">English</option>
+                        <option value="Sesotho">Sesotho</option>
+                        <option value="IsiXhosa">IsiXhosa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                    <div class="font-weight-bold">Definition:</div>
+                    <input type="text" class="form-control" id="exampleInputDefinition" name="Definition">
+                    </div>
+                    <div class="form-group">
+                    <div class="font-weight-bold">Example use:</div>
+                    <input type="text" class="form-control" id="exampleInputUsage" name="Usage">
+                    </div>
+                    <div class="form-group">
+                    <div class="font-weight-bold">Part of speech:</div>
+                    <select class="form-control " type="text"  id="exampleInputPOS" name="POS">
+                        <option value="">choose</option>
+                        <option value="verb">verb</option>
+                        <option value="noun">noun</option>
+                        <option value="adjective">adjective</option>
+                        <option value="adverb">adverb</option>
+                        <option value="pronoun">pronoun</option>
+                        <option value="preposition">preposition</option>
+                        <option value="conjunction">conjunction</option>
+                        <option value="particle">particle</option>
+                        <option value="article">article</option>
+                        <option value="interjection">interjection</option>
+                        </select>
+                    </div>
+
+                    
+                    <button type="submit" class="btn btn-primary btn-user btn-block">Add</button>
+                
+                </form>
+                </div>
+            </div>
+            </div>
+        
+        </div>
+        </div>
+        <!-- ******************************************** -->  
+    </div>
+    </div>
+</div>
