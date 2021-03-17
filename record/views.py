@@ -67,6 +67,7 @@ def video_container(request):
         text          = request.POST.get('text', '')
         language      = request.POST.get('language', '')
         name          = request.POST.get('name', '')
+        timestamps    = request.POST.get('timestamps', '')
         video         = request.FILES.get('video_player', '')
         file_type     = request.POST.get('type', '/').split('/')[0]
         size          = request.POST.get('size', '')
@@ -76,6 +77,8 @@ def video_container(request):
         else: path = os.path.join('static','media', file_type, text)
         
         file_saved = handle_uploaded_file(video, path, name)
+        
+        open(os.path.join(path, name[:-4]+'json'), 'w+').write(timestamps)
 
         if(file_saved and text !=""):
             if(language == ""):
@@ -89,6 +92,7 @@ def video_container(request):
             SignMetadata(
                 text = prompt,
                 video = os.path.join(path, name),
+                timestamps = os.path.join(path, name[:-4]+'json'),
                 user = request.user
             ).save()        
     else:
