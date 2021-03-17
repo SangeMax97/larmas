@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+<!-- stem text -->
+{% block content %} 
+<div class="col-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                    aria-controls="home" aria-selected="true">Stemming</a>
+            </li>
+
+        </ul>
+        <hr>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12 col-md-6">
+           
+            <form id="stem_form" class="text-form">   
+                {% csrf_token %}                 
+                <div class="form-group">
+                    <p class="my-0"> Copy-paste word here: </p>
+                    <input type="text" class="form-control form-control-sm" name="text_to_stem">
+                </div>  
+
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">language</label>
+                    </div>
+                    <select class="custom-select" name='language'>
+                        <option value="" selected>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="IsiXhosa">IsiXhosa</option>
+                        <option value="Sesotho">Sesotho</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="waves btn btn-card shadow px-3 py-2 mb-3 rounded">Stem Text</button>            
+            </form>
+
+        </div>  
+                
+        <div id="stem_right_div" class="col-12 col-md-6 "></div>   
+        
+    </div>   
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+
+{% endblock content %}
+
+{% block script %}
+
+$(document).ready(function() {
+
+
+    $('#stem_form').submit(function(e) {
+        
+        $.post("{% url 'stem:index' %}", $(this).serialize(), function(data) {
+
+            $('#stem_right_div').html('');
+            if(data['response']) {
+                $('#stem_right_div').html(data['response']);
+            }
+            else {
+                var result = data['result'];
+                var text = data['text']
+                
+                var template = `
+                <p class="mb-0 text-break text-justify" style="font-size: 20px;">${result}</p>
+                <input type="text" id="text" value=${text} hidden>
+                <hr class="mt-1 mb-0 pb-2">
+                <div class="card px-2 pb-1">
+                    <div class="stem-vote-block">
+                        <p class="pt-1 pb-0 mb-1">Is ${text} stemmed correctly?</p>
+                        <a href="#" class="btn btn-card small mb-1 stem-vote">Yes</a>
+                        <a href="#" class="btn btn-danger small mb-1 stem-vote">No</a>
+                        <a href="#" class="btn btn-secondary small mb-1 stem-vote">Not Sure</a>
+                    </div>
+                </div>
+                `                 
+                $('#stem_right_div').append(template);
+            }
+ 
+        });
+        e.preventDefault();
+    });
+
+    $(document.body).on('click', '.stem-vote', function (e) {
+
+        var serial_data = {
+          'csrfmiddlewaretoken': '{{csrf_token}}',
+          'vote': $(this).text(),
+          'prompt': $('#text').val(),
+        }
+          
+        $.post("{% url 'stem:index' %}", serial_data, function (data) {
+            var template = `
+                <p class="text-center my-0">${data['response']}</p>
+            `
+            $(".stem-vote-block").html(template);
+        });
+      
+        e.preventDefault();
+      });
+
+
+
+    // $('.stem-vote').click(function (e) {
+    //     console.log($(this));
+        
+    //     // var serial_data = {
+    //     //   'csrfmiddlewaretoken': '{{csrf_token}}',
+    //     //   'vote': $(this).text()
+    //     //   'prompt': $('#text'),
+
+    //     // }
+    //     // $.post("{% url 'vote' %}", serial_data, function (data) {
+    //     //   console.log('heteronym vote for {{word}} successful');
+    //     //   $('.heteronym-block-{{word}}').hide('slow');
+    //     //   $('.vote-complete-{{word}}').removeClass('d-none-2');
+    //     // });
+    //     e.preventDefault();
+
+    //   });
+
+
+});
+
+{% endblock %}
