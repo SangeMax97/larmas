@@ -1,0 +1,82 @@
+<!-- chunk text  -->
+{% block content %} 
+<div class="container-fluid">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12 col-md-6">
+            <form id="chunk_form" class="text-form">
+                {% csrf_token %}
+                <div class="input-group input-group-sm mb-2">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">n-gram</label>
+                    </div>
+                    <select class="custom-select" id="inputGroupSelect01" name='n-gram'>
+                        <option value="0" selected>Choose n ...</option>
+                        <option value="1">Unigram (n=1)</option>
+                        <option value="2">Bigram (n=2)</option>
+                        <option value="3">Trigram (n=3)</option>
+                        <option value="4">n=4</option>
+                        <option value="5">n=5</option>
+                    </select>
+                </div>
+
+                <div class="input-group input-group-sm mb-2">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect02">language</label>
+                    </div>
+                    <select class="custom-select" id="inputGroupSelect02" name='language'>
+                        <option value="" selected>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="IsiXhosa">IsiXhosa</option>
+                        <option value="Sesotho">Sesotho</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <textarea name='text_to_chunk' style="min-height: 180px" class="form-control"></textarea>
+                </div>  
+                <button type="submit" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Chunk Text</button>  
+            </form>
+        </div>  
+
+        <div class="col-12 col-md-6">
+            <h4 id="chunk_heading"></h4>
+            <textarea id="chunk_result" style="min-height: 240px; resize: none;" class="border-white form-control mt-3 bg-light" readonly></textarea>
+            <p id="chunk_error"></p>
+     
+        </div> 
+    </div>      
+</div>
+{% endblock content %}
+ 
+{% block script %}
+    <script> 
+        $(document).ready(function() {
+
+            $('#chunk_form').submit(function(e) {
+                // console.log('chunk:');
+                $.post("{% url 'chunk' %}", $(this).serialize(), function(data) {
+                    var chunk_result = data['chunk_result'];
+                    var chunk_error = data['chunk_error'];
+                    // console.log(data);
+                    if(!chunk_error) {
+                        $('#chunk_result').val(JSON.stringify(chunk_result));
+                        $('#chunk_heading').html('Results');
+                        $('#chunk_result').removeClass('border-white');
+
+                    }
+                    else {
+                        $('#chunk_result').val('');
+                        $('#chunk_heading').html(chunk_result);
+                        // $('#chunk_result').addClass('border-white');
+                    }
+                    
+                    
+                });
+                e.preventDefault();
+            });
+
+        });
+    </script>
+{% endblock %}
+
+

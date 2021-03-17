@@ -1,0 +1,60 @@
+<!-- split text (stemming) -->
+{% block content %} 
+<div class="container-fluid">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12 col-md-6">
+            <form id="tokenize_form" class="text-form">
+                {% csrf_token %}
+                <p class="my-0"> Copy-paste text here: </p>
+                
+                <div class="form-group">
+                    <textarea name='text_to_tokenize' style="min-height: 190px" class="form-control"></textarea>
+                    <p class="mb-0 mt-3"> Separate tokens by (default is whitespace): </p>
+                    <input name="splitter" type="text" class="form-control form-control-sm">
+                </div>  
+
+                <button type="submit" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Tokenize Text</button>  
+            </form>
+        </div>  
+        
+        <div class="col-12 col-md-6">      
+            <h4 id="tokenize_heading"></h4>
+            <textarea id="tokenize_result" style="min-height: 240px" class="border-white form-control mt-3 bg-light" readonly></textarea>
+            <p id="tokenize_error"></p>
+        </div> 
+
+    </div>      
+</div>
+{% endblock content %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+
+            $('#tokenize_form').submit(function(e) {
+                // console.log('tokenize');
+                $.post("{% url 'tokenize' %}", $(this).serialize(), function(data) {
+                    var tokenize_result = data['tokenize_result'];
+                    var tokenize_error = data['tokenize_error'];
+                    // console.log(data);
+                    if(!tokenize_error) {
+                        $('#tokenize_result').val(JSON.stringify(tokenize_result));
+                        $('#tokenize_heading').html('Results');
+                        $('#tokenize_result').removeClass('border-white');
+
+                    }
+                    else {
+                        $('#tokenize_result').val('');
+                        $('#tokenize_heading').html(tokenize_result);
+                        // $('#tokenize_result').addClass('border-white');
+                    }
+                    
+                    
+                });
+                e.preventDefault();
+            });
+
+
+        });
+    </script>
+{% endblock %}
