@@ -82,7 +82,7 @@
             
             console.log(data)
 
-            text = data['text']
+            text = data['text'] + ' test1 test2'
             language = data['language']
 
             $('#languageField').text(language);
@@ -191,6 +191,26 @@ $(document).ready(function() {
         // formData.append('type', );
         formData.append('language', $('#languageField').text());
         formData.append('text', $('#textField').text());
+
+        var tokens = $('#textField').text().split(" ");
+
+        console.log(tokens)
+        console.log("tokens__________________")
+
+        var timestamps = {}
+
+        $.each(tokens, function(i) {
+            var text  = tokens[i];
+            var start = $('#start-' + text).val();
+            var end   = $('#end-' + text).val();
+
+            timestamps[text] = {'start':start, 'end':end};
+        });
+        timestamps = JSON.stringify(timestamps)
+        formData.append('timestamps', timestamps);
+
+        console.log(timestamps)
+        console.log('timestamps__________________')
                    
         xhr("{% url 'audio_container' %}", formData, function (fName) { 
             location.reload(true);
