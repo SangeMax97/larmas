@@ -1,0 +1,120 @@
+
+<div class="container-fluid">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12 col-md-6">
+            <form id='pos_form' class="text-form">
+                    {% csrf_token %}
+
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label name='language' class="input-group-text" for="inputGroupSelect01">language</label>
+                    </div>
+                    <select class="custom-select" id="inputGroupSelect01">
+                        <option selected>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="IsiXhosa">IsiXhosa</option>
+                        <option value="Sesotho">Sesotho</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <textarea name='text' style="min-height: 180px" class="form-control"></textarea>
+                </div>  
+                <button type="submit" class="btn btn-card shadow px-3 py-2 mb-2 rounded">POS-tag Text</button>  
+            
+            </form>
+        </div>  
+        
+        <div class="col-12 col-md-6">
+
+            <div class="col-12 pr-0">
+                <div class='row result' style="max-height: 220px; overflow-y: auto;">
+                
+                </div>
+            </div>     
+        </div>    
+
+        <!-- <div class="">
+            <div class='row mx-1'>
+                <div class=" tag-label tagadjective">adjective</div>
+                <div class=" tag-label  tagpreposition">preposition</div>
+                <div class=" tag-label  tagconjunction">conjunction</div>
+                <div class=" tag-label  tagdeterminer">determiner</div>
+                <div class=" tag-label  taginterjection">interjection</div>
+                <div class=" tag-label  tagnoun">noun</div>
+                <div class=" tag-label  tagexclamation">exclamation</div>
+                <div class=" tag-label  tagpronoun">pronoun</div>
+                <div class=" tag-label  tagverb">verb</div>
+                <div class=" tag-label  tagadverb">adverb</div>
+            </div>
+        </div>   -->
+        
+    </div>   
+
+</div>
+
+
+
+<style>
+    .tag-label {
+        margin: .2em;
+        padding: .2em .6em;
+        display: inline !important;
+        border-radius: 5px;
+
+    }
+
+    .tagged {
+        background: wheat;
+    }
+
+    .tagadjective {
+        background: cyan;
+    }
+    .tagpreposition {
+        background: darkgoldenrod;
+    }
+    .tagconjunction {
+        background: darkorange;
+    }
+    .tagdeterminer {
+        background: darksalmon;
+    }
+    .taginterjection {
+        background: deeppink;
+    }
+    .tagnoun {
+        background: deepskyblue;
+    }
+    .tagexclamation {
+        background: firebrick;
+    }
+    .tagpronoun {
+        background: gold;
+    }
+    .tagverb {
+        background: hotpink;
+    }
+    .tagadverb {
+        background: crimson;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        $('#pos_form').submit(function(e) {
+            $('.result').html('');
+            $.post("{% url 'pos_tag' %}", $(this).serialize(), function(data) {
+
+                console.log(data)
+                $('.result').append(data['response']);
+
+                
+                                        
+            });
+            e.preventDefault();
+        });
+    
+    
+    });
+</script>

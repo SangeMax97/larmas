@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+<!-- pos-tag text -->
+{% block content %} 
+
+
+<div class="col-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                    aria-controls="home" aria-selected="true">Part of Speech Tagging</a>
+            </li>
+            {% comment %} <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                    aria-controls="profile" aria-selected="false">View raw data
+                </a>
+            </li> {% endcomment %}
+        </ul>
+        <hr>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                {% include "pos_tag_text/tagger.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+{% endblock content %}
