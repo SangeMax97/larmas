@@ -1,0 +1,782 @@
+
+{% load static %}
+
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+
+
+  <title>{% block title %}{% if name %}{{ name }} – {% endif %}LARMAS{% endblock %}</title>
+
+
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Rubik:200,200i,300,300i,400,400i,600,600i" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+  {% block head %} {% endblock %}
+
+  <style>
+    
+    /*RIGHT FILTER BOX*/
+    .right-filter {
+      position: fixed;
+      right: 0;
+    }
+    .right-filter h2 {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 5px 15px;
+        margin-bottom: 12px;
+        border-bottom: none;
+        margin: 0;
+        font-weight: 400;
+        text-align: left;
+        background: #4e73df;
+        color: #fff;
+    }
+
+    .right-filter h3 {
+        font-weight: 400;
+        font-size: 14px;
+        padding: 0 15px;
+        margin-bottom: 10px;
+        margin-top: .6em;
+    }
+
+    .right-filter ul {
+        margin: 5px 0;
+        padding: 0 15px 15px;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .right-filter li.selected {
+        border-left: 5px solid #eaeaea;
+        padding-left: 10px;
+        margin-left: -15px;
+        list-style-type: none;
+
+    }
+
+    .right-filter li, .right-filter li input  {
+        list-style-type: none;
+        margin-left: 0;
+        padding-left: 0;
+        font-size: 13px;
+        line-height: 20px;
+        padding: 1px 0;
+    }
+
+    .right-filter a {
+        display: block;
+        color: #999;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        text-decoration: none !important;
+    }
+
+
+    .right-filter li.selected a {
+        color: #5b80b2;
+        display: block;
+    }
+
+    .right-filter li a:hover {
+        color: #036;
+    }
+  </style>
+</head>
+
+<body id="page-top">
+
+  <nav style="position: fixed; position: -webkit-sticky; top: 0; width: 100%; z-index: 10"
+    class="navbar navbar-expand-sm navbar-light bg-light py-3 shadow-sm">
+
+
+    <a class="text-decoration-none sidebar-brand d-flex align-items-center justify-content-center primary-colour"
+      href="{% url 'home'%}">
+      {% if not user.is_authenticated %}
+      <div class="sidebar-brand-icon rotate-n-15 mx-3">
+        <i class="fas fa-language fa-2x aria-hidden='true'"></i>
+      </div>
+      <div style="letter-spacing: 0.05rem;" class="sidebar-brand-text small">LARMAS</div>
+      {% endif %}
+    </a>
+
+
+    <button id="nav-toggler" class="btn btn-link d-lg-none rounded-circle mr-3" type="button" data-toggle="collapse"
+      data-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse {% if user.is_authenticated %}ml-5 pl-5 {% endif %}" id="navbarSupportedContent2">
+     
+      <!-- Form - Search -->
+      <form action="{% url 'dictionary_search' %}"  method='GET' class="d-none d-lg-inline-block form-inline ml-5 pl-5 navbar-search">
+        {% csrf_token %}
+        <div class="input-group   {% if user.is_authenticated %} ml-sm-4  {% endif %} ">
+          <input style="width: 260px;" type="text" name="prompt" class="form-control bg-light " placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button class="btn btn-primary small m-0 p-2 px-3" type="submit">
+              <i class="fas fa-search fa-sm"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+      
+      <ul class="navbar-nav ml-auto">
+
+          <li class="nav-item dropdown no-arrow d-lg-none">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>
+              <!-- Dropdown - Search -->
+              <div style="width: 285px;" class="dropdown-menu dropdown-menu-right  p-1 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form action="{% url 'dictionary_search' %}" class="form-inline mr-auto w-100 navbar-search ">
+                  {% csrf_token %}
+                  <div  class="input-group">
+                    <input style="width: 235px;" type="text" name="prompt" class="form-control bg-light border-1 " placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary " type="submit">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+
+        {% block nav-items %}
+
+        <li class="nav-item ">
+          <a class="nav-link " href="{% url 'home' %}">
+            <span class="mr-2 text-gray-600 small">Home</span>
+          </a>
+        </li>
+
+        <li class="nav-item ">
+          <a class="nav-link " href="{% url 'about' %}">
+            <span class="mr-2 text-gray-600 small">Contact</span>
+          </a>
+        </li>
+
+        <li class="nav-item ">
+          <a class="nav-link " href="{% url 'about' %}">
+            <span class="mr-2 text-gray-600 small">About</span>
+          </a>
+        </li>
+
+        
+
+        <!-- Logged out -->
+        {% if not user.is_authenticated %}
+        <li class="nav-item ">
+          <a class="nav-link " href="{% url 'login' %}">
+            <span class="mr-2 text-gray-600 small">Sign In</span>
+          </a>
+
+        </li>
+        <div class="topbar-divider d-none d-sm-block"></div>
+        <li class="nav-item ">
+          <a class="nav-link " href="{% url 'signup' %}">
+            <span class="mr-2 text-gray-600 small">Sign Up</span>
+          </a>
+        </li>
+
+        <!-- Logged in -->
+        {% else %}
+
+        <li class="nav-item dropdown no-arrow">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <span class="mr-2 text-gray-600 small">{{ user.first_name }} {{ user.last_name }}</span>
+            <i class="fas fa-user fa-sm fa-fw primary-colour"></i>
+            <!-- <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60"> -->
+          </a>
+          <!-- Dropdown - User Information -->
+          <div style="position: -webkit-sticky; position: sticky; top: 0; z-index: 999" class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="{% url 'profile'%}">
+              <i class="fas fa-user fa-sm fa-fw mr-2 primary-colour"></i>
+              Profile
+            </a>
+            <a class="dropdown-item" href="{% url 'profile'%}">
+              <i class="fas fa-cogs fa-sm fa-fw mr-2 primary-colour"></i>
+              Settings
+            </a>
+            <a class="dropdown-item" href="{% url 'profile'%}">
+              <i class="fas fa-list fa-sm fa-fw mr-2 primary-colour"></i>
+              Activity Log
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="" data-toggle="modal" data-target="#deleteAccountModal">
+              <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 primary-colour"></i>
+              Delete Account
+            </a>
+          </div>
+        </li>
+
+        <div class="topbar-divider d-none d-sm-block"></div>
+
+        <li class="nav-item ">
+          <a class="nav-link " href="" data-toggle="modal" data-target="#logoutModal">
+            <span class="mr-2 text-gray-600 small">Sign Out</span>
+          </a>
+        </li>
+
+        {% endif %}
+
+        {% endblock nav-items %}
+
+      </ul>
+
+    </div>
+  </nav>
+
+  <!-- Page Wrapper -->
+  <div id="wrapper" class="">
+
+    {% if user.is_authenticated %}
+    <!-- Sidebar -->
+    <ul style="position: -webkit-sticky; position: sticky; top: 0; z-index: 900"
+      class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion h-100" id="accordionSidebar">
+
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fas fa-language aria-hidden='true'"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3 small">LARMAS</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      {% block sidebar %}
+      <!-- Nav Item - Dashboard -->
+      {% comment %} <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+          aria-controls="collapsePages">
+          <i class="fas fa-fw fa-book"></i>
+          <span>Dictionary</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Language:</h6>
+            <a class="collapse-item" href="{% url 'dictionary'  %}">All</a>
+            <a class="collapse-item" href="{% url 'dictionary' 'English' %}">English</a>
+            <a class="collapse-item" href="{% url 'dictionary' 'Sesotho' %}">Sesotho</a>
+            <a class="collapse-item" href="{% url 'dictionary' 'IsiXhosa' %}">IsiXhosa</a>
+
+          </div>
+        </div>
+      </li> {% endcomment %}
+
+       <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+          aria-controls="collapsePages">
+          <i class="fas fa-fw fa-book"></i>
+          <span>Annotate</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Type:</h6>
+            <a class="collapse-item" href="{% url 'dictionary_audio' %}">Speech</a>
+            <a class="collapse-item" href="{% url 'dictionary_video' %}">Sign</a>
+
+          </div>
+        </div>
+      </li> 
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'dictionary' %}">
+          <i class="fas fa-fw fa-book"></i>
+          <span>Dictionary</span>
+        </a>
+      </li>
+
+      <!-- <li class="nav-item">
+        <a class="nav-link" href="{% url 'dict_2' %}">
+          <i class="fas fa-fw fa-book-reader"></i>
+          <span>dict_2</span>
+        </a>
+      </li> -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'translate_text' %}">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Translation</span>
+        </a>
+      </li>
+      <!-- <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3" aria-expanded="true"
+          aria-controls="collapsePages3">
+          <i class="fas fa-fw fa-book"></i>
+          
+          <span>Add Prompt</span>
+        </a>
+        <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">data type:</h6>
+            <a class="collapse-item" href="{% url 'home' %}">Text</a>
+            <a class="collapse-item" href="{% url 'home' %}">Speech</a>
+            <a class="collapse-item" href="{% url 'home' %}">Sign</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Quality Evaluation</span>
+        </a>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'charts:index' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Charts</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'pos_tag' %}">
+          <i class="fas fa-fw fa-tools"></i>
+          <span>POS Tagging</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'chunk_text' %}">
+          <i class="fas fa-fw fa-tools"></i>
+          <span>Tokenization</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'stem:index' %}">
+          <i class="fas fa-fw fa-tools"></i>
+          <span>Stemming</span>
+        </a>
+      </li>
+
+      <!-- <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">
+          <i class="fas fa-fw fa-chart-bar"></i>
+          <span>Word Frequency</span>
+        </a>
+      </li> -->
+
+      <!-- <li class="nav-item">
+
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages4" aria-expanded="true"
+          aria-controls="collapsePages4">
+          <i class="fas fa-fw fa-tools"></i>
+          <span>Language Toolkit</span>
+        </a>
+ 
+        <div id="collapsePages4" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Choose:</h6>
+            <a class="collapse-item" href="{% url 'pos_tag' %}">POS Tagging</a>
+            <a class="collapse-item" href="{% url 'chunk_text' %}">Tokenization</a>
+            <a class="collapse-item" href="{% url 'stem:index' %}">Stemming</a>
+
+          </div>
+        </div>
+      </li> -->
+      {% endblock sidebar %}
+
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+    {% endif %}
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column pt-5 mt-4">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        {% block hero-section %} {% endblock hero-section %}
+
+        <!-- Begin Page Content -->
+        <div id="page_content" class="container-fluid pt-3">
+          <div>
+            {% block content %} {% endblock content %}
+          </div>
+
+          {% block right-bar %}
+
+          {% endblock right-bar %}
+        </div>
+
+        <!-- End of .container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <!-- <footer class="sticky-footer bg-white m-0" style="position: fixed; padding: 30px 0; bottom: 10px; width: 100%;">  -->
+        <footer class="sticky-footer bg-white m-0"> 
+        <div class="container mx-auto">
+          <div class="copyright text-center mx-auto">
+            <span>Copyright &copy; LARMAS 2019</span>
+          </div>
+        </div>
+      </footer>
+      
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade in" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Sign Out" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-card" href="{% url 'logout' %}">Sign out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- delete account Modal-->
+  <div class="modal fade in" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Delete Account?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-danger">Warning: Once your user account has been deleted, we cannot restore your
+          content.</div>
+        <div class="modal-footer">
+          <button class="btn btn-card" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-danger" href="{% url 'logout' %}">Delete Account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin-2.js' %}"></script>
+
+
+
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+
+<script>{% block script %}{% endblock %}</script>
+
+  <style>
+
+
+  @media (max-width: 700px) {
+    /* * {
+      background: indianred;
+    } */
+    #page_content {
+      padding: 1em 0 0 0 !important;
+    }
+    .container {
+      padding: 0 !important;
+    }
+    .card-block > p {
+      margin-left:  1em !important;
+      margin-right: 1em !important;
+    }
+    .modal-body .row > div {
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+    }
+    .modal-body .row > .right-div {
+      padding: 1em 0 0 0;
+    }
+  }
+
+
+  @media (min-width: 700px) {
+    .modal-dialog {
+        max-width: 700px;
+        }
+  }
+    .corner {
+      color: black;
+      background-color: #CFCFCF;
+      display: inline-block;
+      position: absolute;
+      bottom: auto;
+      left: auto;
+      top: 0;
+      right: 0;
+      width: auto;
+      height: auto;
+      font-size: 0.9em;
+      border-radius: 0 0 0 5px;
+      padding: 0 0.5em;
+      text-shadow: none;
+      z-index: 1;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      -webkit-transform: none;
+      -moz-transform: none;
+      -ms-transform: none;
+      -o-transform: none;
+      transform: none;
+    }
+
+    .d-none-1, .d-none-2 {
+      display: none;
+    }
+
+    .sidenav h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 5px 15px;
+      margin-bottom: 12px;
+      border-bottom: none;
+    }
+
+    .sidenav h3 {
+      font-weight: 400;
+      font-size: 14px;
+      padding: 0 15px;
+      margin-bottom: 10px;
+    }
+
+    .sidenav {
+      width: 200px;
+      height: 80%;
+      position: fixed;
+      z-index: 1;
+      bottom: 100px;
+      right: 20px;
+      overflow-x: hidden;
+      padding: 8px 0;
+    }
+
+    .sidenav a {
+      padding: 6px 8px 6px 16px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #2196F3;
+      display: block;
+    }
+
+    .sidenav a:hover {
+      color: #064579;
+    }
+
+    #nav-toggler {
+      height: 2.5rem;
+      width: 2.5rem;
+    }
+
+    #nav-toggler:hover {
+      background-color: #eaecf4 !important;
+    }
+
+    #nav-toggler:active {
+      background-color: #dddfeb !important;
+    }
+
+    .small {
+      font-size: 80% !important;
+      font-weight: 400;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 140px;
+      background-color: #555;
+      color: #000;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 150%;
+      left: 50%;
+      margin-left: -75px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .form-control:focus {
+      border-color: #4e73df;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+
+    .custom-select:focus {
+      border-color: #4e73df;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+
+
+    .adj {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      border-radius: 2px;
+    }
+
+    .textTagged {
+      border: 1px solid #e3e3e3;
+      border-radius: 5px;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+      padding: 4px;
+      line-height: 1.8em;
+      min-height: 60px;
+    }
+
+
+    .btn-card {
+      background: #4e73df;
+      color: #fff;
+    }
+
+    .card-a:hover {
+      color: #445fb6 !important;
+      text-decoration: none !important;
+    }
+
+    .primary-colour,
+    .card-a {
+      color: #4e73df !important;
+      text-decoration: none !important;
+    }
+
+    .equal {
+      display: flex;
+      display: -webkit-flex;
+      flex-wrap: wrap;
+    }
+
+    @media only screen and (max-width: 770px) {
+      .equal {
+        display: block;
+      }
+    }
+
+    .btn-card:hover {
+      background: #445fb6;
+      color: #fff;
+    }
+
+    .result {
+      border: none;
+    }
+
+    .waves {
+      position: relative;
+      cursor: pointer;
+      display: inline-block;
+      overflow: hidden;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      vertical-align: middle;
+      z-index: 1;
+      -webkit-transition: .3s ease-out;
+      transition: .3s ease-out;
+    }
+
+    .hr_div {
+      margin: 1.5em auto;
+      background: #4e73df;
+      display: block;
+      width: 80px;
+      height: 6px
+    }
+    .chevron-flip {
+      -webkit-transform: scaleY(-1);
+      transform: scaleY(-1);
+    }
+
+
+  </style>
+
+</body>
+
+</html>

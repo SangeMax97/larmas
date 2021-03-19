@@ -1,0 +1,201 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+
+
+
+{% block hero-section %}
+<div class="jumbotron rounded-0">
+
+  <div class="container">
+    {% if 0 %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+      Please complete your profile <strong> <a class='card-a' href="{% url 'profile'%}">here! </a> </strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+    <div class="row">
+      <div class="col-lg-6 equal2">
+        {% comment %} <h1 class="display-3">Welcome {{ user.first_name }}!</h1> {% endcomment %}
+        <h1 class="display-5">Unrestricted access to South African language resources</h1>
+
+        <p>
+          <b>LARMAS</b> (LAnguage Resource MAnagement System) is a *centralised* repository of South African language resources that allows both the contribution and 
+          *consumption* of language resources (text, speech and video) of South African languages.
+        </p>
+
+        <p><a class="btn btn-card shadow px-3 py-2 mb-2 rounded" href="{% url 'about'%}" role="button">Learn more &raquo;</a>
+      </div>
+
+      <div class="col-lg-6 equal2">
+        <img src="{% static 'img/head.svg' %}" class="img-fluid px-3 px-sm-4 mt-3 mb-4 d-none d-lg-block"
+          style="width: 25rem;" alt="">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+  <!-- Example row of columns -->
+  <div class="row m-4">
+    <div class="col-12 mt-5">
+      <h1 class="mb-3 text-center">For individuals</h1>
+      <div class="hr_div"></div>
+      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+        consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+        repudiandae obcaecati.</p>
+    </div>
+  </div>
+
+  <div class="row text-center">
+
+    <style>
+      .grow:hover {
+        transform: scale(1.02);
+      }
+    </style>
+
+    <a class="col-md-4 equal grow text-decoration-none text-reset" href="{% url 'dictionary'  %}">
+
+      <div class="shadow p-2 py-5">
+        <h1><i class="fas fa-book primary-colour"></i></h1>
+        <h2>Dictionary</h2>
+        <p>Look up word definitions, word usages, parts of speech, amongst others. </p>
+        <!-- <p><a class="btn btn-card" href="#" role="button">View details &raquo;</a></p> -->
+
+      </div>
+
+    </a>
+
+    <a class="col-md-4 equal grow text-decoration-none text-reset" href="{% url 'dictionary'  %}">
+      <!-- <a class="grow text-decoration-none text-reset" href="{% url 'dictionary'  %}"> -->
+      <div class="shadow p-2 py-5">
+        <h1><i class="fas fa-fw fa-book-reader primary-colour"></i></h1>
+        <h2>Thesaurus</h2>
+        <p>Look up groups of synonyms and related words. </p>
+        <!-- <p><a class="btn btn-card" href="#" role="button">View details &raquo;</a></p> -->
+      </div>
+
+    </a>
+    <a class="col-md-4 equal grow text-decoration-none text-reset" href="{% url 'dictionary'  %}">
+
+      <div class="shadow p-2 py-5">
+        <h1><i class="fas fa-fw fa-language primary-colour"></i></h1>
+        <h2>Translation</h2>
+        <p>Translate words between English, IsiXhosa and SeSotho .</p>
+        <!-- <p><a class="btn btn-card" href="#" role="button">View details &raquo;</a></p> -->
+      </div>
+
+    </a>
+  </div>
+
+</div>
+
+<div class="container mb-5">
+  <!-- Example row of columns -->
+  <div class="row m-4">
+    <div class="col-12 mt-5">
+      <h1 class="mb-3 text-center">For researchers</h1>
+      <div class="hr_div"></div>
+      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+        consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+        repudiandae obcaecati.</p>
+    </div>
+  </div>
+
+  <div class="row text-center my-2">
+
+    <a class="col-md-4 equal grow text-decoration-none text-reset" href="{% url 'dictionary'  %}">
+        <div class="shadow p-2 py-5">
+        <h1><i class="fas fa-fw fa-tools primary-colour"></i></h1>
+        <h2>Language Toolkits</h2>
+        <p>Part-of-speech tagging, tokenization, n-gram chunking and more.</p>
+      </div>
+    </a>
+
+    <a class="col-md-4 equal grow text-decoration-none text-reset" href="{% url 'dictionary'  %}">
+      <div class="shadow p-2 py-5">
+        <h1><i class="fas fa-database primary-colour"></i></h1>
+        <h2>Language Datasets</h2>
+        <p>Text, Speech and Sign Language datasets in South African Languages. </p>
+      </div>
+    </a>
+
+    <a class="col-md-4 equal grow text-decoration-none text-reset" href="{% url 'dictionary'  %}">
+      <div class="shadow p-2 py-5">
+        <h1><i class="fas fa-fw fa-cubes primary-colour"></i></h1>
+        <h2>NLP Models</h2>
+        <p>Pre-trained Natural Language Processing Models in South African Languages.</p>
+
+      </div>
+    </a>
+
+
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="card-block">
+    <h3 class="text-center">N-gram word tokenization</h3>
+    <div class="hr_div"></div>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+      consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+      repudiandae obcaecati.</p>
+    {% include "chunk_text/chunk.html" %}
+  </div>
+  <div class="card-block">
+    <h3 class="text-center">Word tokenization</h3>
+    <div class="hr_div"></div>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+      consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+      repudiandae obcaecati.</p>
+    {% include "chunk_text/tokenize.html" %}
+  </div>
+  <div class="card-block">
+    <h3 class="text-center">Dictionary search</h3>
+    <div class="hr_div"></div>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+      consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+      repudiandae obcaecati.</p>
+    {% include "search_text/search.html" %}
+  </div>
+  <div class="card-block">
+    <h3 class="text-center">Retreival based translation</h3>
+    <div class="hr_div"></div>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+      consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+      repudiandae obcaecati.</p>
+    {% include "translate_text/translate.html" %}
+  </div>
+  <div class="card-block">
+    <h3 class="text-center">Speech annotation</h3>
+    <div class="hr_div"></div>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+      consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+      repudiandae obcaecati.</p>
+    {% include "record/add_audio.html" %}
+  </div>
+  <div class="card-block">
+    <h3 class="text-center">Sign Language annotation</h3>
+    <div class="hr_div"></div>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur, ipsam pariatur, eligendi quisquam
+      consectetur quis commodi recusandae eveniet vero facere quasi eos cupiditate veritatis magni enim sed nemo
+      repudiandae obcaecati.</p>
+    {% include "record/add_video.html" %}
+  </div>
+</div>
+
+
+{% endblock %}

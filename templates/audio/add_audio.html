@@ -1,0 +1,71 @@
+{% extends "cards.html" %}
+
+<!-- add audio -->
+{% block content %} 
+<div class="container">
+    <div class="row shadow p-3 mb-5 bg-white rounded">
+        <div class="col-12 col-md-6">
+            <h4>Test with your own text</h4>
+            <form class="text-form">
+                    <p class="my-0"> Copy-paste word here: </p>
+                    <input type="text" class="mb-3 form-control form-control-sm" name="searched_text">
+                    
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">language</label>
+                    </div>
+                    <select class="custom-select" id="inputGroupSelect01">
+                        <option selected>Choose...</option>
+                        <option value="English">English</option>
+                        <option value="IsiXhosa">IsiXhosa</option>
+                        <option value="Sesotho">Sesotho</option>
+                    </select>
+                </div>
+                
+                <div style="height: 200px" class="form-group">
+                    {% include 'record/audio-container.html' %}
+                </div>  
+                <button type="submit" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Add audio</button>  
+            
+            </form>
+        </div>  
+        
+        <div class="col-12 col-md-6">
+            <h4>Add metadata</h4>
+            <form class="text-form">                      
+                <div class="form-group">
+                    <label class="my-0" for="">Copy-paste definition here:</label>                     
+                    <textarea style="min-height: 100px" class="form-control"></textarea>
+                </div>  
+
+                <div class="form-group">
+                    <label class="my-0" for="">Copy-paste example usage here:</label>                     
+                    <textarea style="min-height: 100px" class="form-control"></textarea>
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">part of speech</label>
+                    </div>
+                    <select class="custom-select" id="inputGroupSelect01">
+                        <option selected>Choose...</option>
+                        <option value="Adjective">Adjective</option>
+                        <option value="Adverb">Adverb</option>
+                        <option value="Conjunction">Conjunction</option>
+                        <option value="Determiner">Determiner</option>
+                        <option value="Noun">Noun</option>
+                        <option value="Number">Number</option>
+                        <option value="Preposition">Preposition</option>
+                        <option value="Pronoun">Pronoun</option>
+                        <option value="Verb">Verb</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-card shadow px-3 py-2 mb-2 rounded">Save</button>  
+            </form>
+        </div>
+
+    </div>       
+
+</div>  
+{% endblock content %}
