@@ -211,7 +211,7 @@ def index(request):
     id_tuple = []
     result = []
 
-    indices = open('/Users/sange/Work/msc_apps-master/dictionary/IsiXhosa_index.json').read()
+    indices = open('dictionary/IsiXhosa_index.json').read()
     indices = json.loads(indices)
 
     index = indices[filter_global]
@@ -223,7 +223,7 @@ def index(request):
 
     result.append(language) 
 
-    indices = open('/Users/sange/Work/msc_apps-master/dictionary/English_index.json').read()
+    indices = open('dictionary/English_index.json').read()
     indices = json.loads(indices)
 
     index = indices[filter_global]
